@@ -119,7 +119,8 @@ select option{background:var(--bg3)}
 <body>
 <div class="app">
 <aside class="sidebar">
-  <div class="sidebar-header"><div class="sidebar-title">SAN</div><div class="sidebar-sub">DAILY TRACKER // 2026</div></div>
+  <div class="sidebar-header"><div class="sidebar-title">SAN</div><div class="sidebar-sub">DAILY TRACKER // 2026</div>
+    <div id="sync-status" style="font-size:9px;color:var(--green);font-family:var(--font-mono);margin-top:4px;min-height:12px"></div></div>
   <div class="level-badge">
     <div><div style="font-size:9px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em">Level</div><div id="sb-level" class="lvl-num">1</div></div>
     <div><div id="sb-lvl-title" class="lvl-title">Novice</div><div id="sb-streak" class="lvl-info">0 day streak</div></div>
@@ -1082,12 +1083,98 @@ function progTab(id,btn){
   btn.classList.add('active');document.getElementById('prog-'+id).classList.add('active');
 }
 // INIT
+// ── CLOUD SYNC (JSONBin) ──────────────────────────────────────────────────────
+const JSONBIN_KEY = '$2a$10$90c3KprPXfxjLXCIWJSVJulaYzshKw48t8u9v3W4mIUSGV1QqtY6C';
+const JSONBIN_URL = 'https://api.jsonbin.io/v3/b';
+let JSONBIN_BIN_ID = localStorage.getItem('sqx_bin_id') || null;
+let syncTimeout = null;
+let lastSyncedData = null;
+
+async function cloudSave() {
+  try {
+    const data = {};
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k.startsWith('sqx_')) data[k] = localStorage.getItem(k);
+    }
+    const payload = JSON.stringify(data);
+    if(payload === lastSyncedData) return; // nothing changed
+    if(!JSONBIN_BIN_ID){
+      // Create new bin
+      const res = await fetch(JSONBIN_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY,'X-Bin-Name':'san-tracker','X-Bin-Private':'true'},
+        body: payload
+      });
+      const json = await res.json();
+      JSONBIN_BIN_ID = json.metadata?.id;
+      if(JSONBIN_BIN_ID){
+        localStorage.setItem('sqx_bin_id', JSONBIN_BIN_ID);
+        lastSyncedData = payload;
+        showSyncStatus('✓ saved');
+      }
+    } else {
+      await fetch(JSONBIN_URL+'/'+JSONBIN_BIN_ID, {
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},
+        body: payload
+      });
+      lastSyncedData = payload;
+      showSyncStatus('✓ saved');
+    }
+  } catch(e) {
+    showSyncStatus('sync error');
+  }
+}
+
+async function cloudLoad() {
+  if(!JSONBIN_BIN_ID) return false;
+  try {
+    showSyncStatus('loading...');
+    const res = await fetch(JSONBIN_URL+'/'+JSONBIN_BIN_ID+'/latest', {
+      headers:{'X-Master-Key':JSONBIN_KEY}
+    });
+    const json = await res.json();
+    const data = json.record;
+    if(!data) return false;
+    Object.entries(data).forEach(([k,v])=>{ if(k.startsWith('sqx_')) localStorage.setItem(k,v); });
+    lastSyncedData = JSON.stringify(data);
+    showSyncStatus('✓ loaded');
+    return true;
+  } catch(e) {
+    showSyncStatus('');
+    return false;
+  }
+}
+
+function scheduleSave(){
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(cloudSave, 1500);
+}
+
+function showSyncStatus(msg){
+  let el = document.getElementById('sync-status');
+  if(!el) return;
+  el.textContent = msg;
+  if(msg.startsWith('✓')) setTimeout(()=>{ if(el.textContent===msg) el.textContent=''; }, 3000);
+}
+
+// Patch DB.set to trigger cloud save
+const _origSet = DB.set.bind(DB);
+DB.set = function(k,v){ _origSet(k,v); scheduleSave(); };
+const _origSetObj = DB.setObj.bind(DB);
+DB.setObj = function(k,v){ _origSetObj(k,v); scheduleSave(); };
+
+
 function init(){
   const d=new Date(),h=d.getHours();
   const el=document.getElementById('today-greeting');if(el)el.textContent=h<12?'ARISE, HUNTER':h<17?'STAY FOCUSED, HUNTER':'EVENING GRIND, HUNTER';
   const dl=document.getElementById('today-date-label');
   if(dl){const dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];const mn=['January','February','March','April','May','June','July','August','September','October','November','December'];dl.textContent=dn[d.getDay()]+' · '+d.getDate()+' '+mn[d.getMonth()]+' '+d.getFullYear();}
-  renderToday();renderCalendar();updateSidebar();
+  // Load from cloud first, then render
+  cloudLoad().then(loaded => {
+    renderToday();renderCalendar();updateSidebar();
+  });
 }
 init();
 
