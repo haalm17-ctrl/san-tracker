@@ -1086,7 +1086,8 @@ function progTab(id,btn){
 // ── CLOUD SYNC (JSONBin) ──────────────────────────────────────────────────────
 const JSONBIN_KEY = '$2a$10$90c3KprPXfxjLXCIWJSVJulaYzshKw48t8u9v3W4mIUSGV1QqtY6C';
 const JSONBIN_URL = 'https://api.jsonbin.io/v3/b';
-let JSONBIN_BIN_ID = localStorage.getItem('sqx_bin_id') || null;
+let JSONBIN_BIN_ID = '6a26872ff5f4af5e29ca2b63'; // hardcoded shared bin
+localStorage.setItem('sqx_bin_id', JSONBIN_BIN_ID);
 let syncTimeout = null;
 let lastSyncedData = null;
 
@@ -1099,29 +1100,13 @@ async function cloudSave() {
     }
     const payload = JSON.stringify(data);
     if(payload === lastSyncedData) return; // nothing changed
-    if(!JSONBIN_BIN_ID){
-      // Create new bin
-      const res = await fetch(JSONBIN_URL, {
-        method:'POST',
-        headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY,'X-Bin-Name':'san-tracker','X-Bin-Private':'true'},
-        body: payload
-      });
-      const json = await res.json();
-      JSONBIN_BIN_ID = json.metadata?.id;
-      if(JSONBIN_BIN_ID){
-        localStorage.setItem('sqx_bin_id', JSONBIN_BIN_ID);
-        lastSyncedData = payload;
-        showSyncStatus('✓ saved');
-      }
-    } else {
-      await fetch(JSONBIN_URL+'/'+JSONBIN_BIN_ID, {
-        method:'PUT',
-        headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},
-        body: payload
-      });
-      lastSyncedData = payload;
-      showSyncStatus('✓ saved');
-    }
+    await fetch(JSONBIN_URL+'/'+JSONBIN_BIN_ID, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},
+      body: payload
+    });
+    lastSyncedData = payload;
+    showSyncStatus('✓ saved');
   } catch(e) {
     showSyncStatus('sync error');
   }
