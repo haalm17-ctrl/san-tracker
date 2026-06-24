@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>San — Daily Tracker 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080a0e;--bg2:#0d1117;--bg3:#111720;--bg4:#161e2a;--border:#1e2d42;--border2:#243448;--text:#e2e8f0;--text2:#8a9ab5;--text3:#4a5a72;--gold:#f0c040;--gold2:#d4a820;--gold-dim:rgba(240,192,64,0.10);--gold-glow:rgba(240,192,64,0.25);--blue:#3b82f6;--blue2:#60a5fa;--blue-dim:rgba(59,130,246,0.12);--green:#22c55e;--green-dim:rgba(34,197,94,0.12);--red:#ef4444;--red-dim:rgba(239,68,68,0.10);--purple:#a855f7;--purple-dim:rgba(168,85,247,0.12);--amber:#f59e0b;--amber-dim:rgba(245,158,11,0.12);--cyan:#06b6d4;--cyan-dim:rgba(6,182,212,0.12);--r:6px;--r2:10px;--font-mono:'Share Tech Mono',monospace;--font-display:'Rajdhani',sans-serif;--font-body:'Inter',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);pointer-events:none;z-index:9999}
+.app{display:flex;min-height:100vh}
+.sidebar{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column}
+.main{margin-left:210px;flex:1;padding:2rem;max-width:980px}
+.sidebar-header{padding:1.25rem 1rem 1rem;border-bottom:1px solid var(--border)}
+.sidebar-title{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--gold);letter-spacing:.05em;line-height:1.1}
+.sidebar-sub{font-family:var(--font-mono);font-size:10px;color:var(--text3);margin-top:4px}
+.xp-bar-wrap{padding:.75rem 1rem;border-bottom:1px solid var(--border)}
+.xp-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);font-family:var(--font-mono);margin-bottom:5px}
+.xp-bg{background:var(--bg4);border-radius:2px;height:4px}
+.xp-fill{height:4px;border-radius:2px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .5s;box-shadow:0 0 8px var(--gold-glow)}
+.level-badge{display:flex;align-items:center;gap:8px;padding:.5rem 1rem .75rem;border-bottom:1px solid var(--border)}
+.lvl-num{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--gold);line-height:1}
+.lvl-title{font-size:12px;color:var(--text2);font-weight:500}
+.lvl-info{font-size:11px;color:var(--text3)}
+nav{padding:.5rem 0;flex:1}
+.nav-section{padding:.4rem 1rem .2rem;font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);font-family:var(--font-mono)}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 1rem;font-size:12px;color:var(--text2);cursor:pointer;border-left:2px solid transparent;transition:all .12s;text-decoration:none}
+.nav-item:hover{color:var(--text);background:var(--bg3)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim)}
+.nav-icon{font-size:13px;width:16px;text-align:center}
+.streak-mini{padding:.75rem 1rem;border-top:1px solid var(--border);margin-top:auto}
+.streak-mini-label{font-size:9px;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
+.streak-dots{display:flex;gap:3px;flex-wrap:wrap}
+.sdot{width:10px;height:10px;border-radius:2px;background:var(--bg4)}
+.sdot.clear{background:var(--gold)}
+.sdot.partial{background:var(--blue2)}
+.section{display:none}.section.active{display:block}
+.page-header{margin-bottom:1.5rem}
+.page-title{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--text);line-height:1.1;letter-spacing:.02em}
+.page-sub{font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-top:5px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:1.1rem 1.25rem;margin-bottom:.875rem}
+.card-title{font-family:var(--font-display);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:.875rem}
+.card-title.gold{color:var(--gold)}.card-title.blue{color:var(--blue2)}.card-title.purple{color:var(--purple)}
+.task-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:.75rem;overflow:hidden;transition:border-color .2s}
+.task-card.active{border-color:var(--gold)}
+.task-card.done{border-color:var(--green)}
+.task-header{display:flex;align-items:center;gap:10px;padding:.875rem 1.1rem;cursor:pointer;background:var(--bg3)}
+.task-icon{font-size:20px;width:32px;text-align:center;flex-shrink:0}
+.task-info{flex:1}
+.task-name{font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:.03em;color:var(--text)}
+.task-meta{font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-top:1px}
+
+
+.quest-body{padding:1rem 1.1rem;border-top:1px solid var(--border)}
+.task-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.task-row:last-child{border-bottom:none}
+.task-check{width:18px;height:18px;border-radius:3px;border:1.5px solid var(--border2);background:transparent;cursor:pointer;flex-shrink:0;margin-top:1px;appearance:none;-webkit-appearance:none;transition:all .15s}
+.task-check:checked{background:var(--gold);border-color:var(--gold)}
+.task-label{flex:1;font-size:13px;color:var(--text2);transition:color .15s}
+.task-label.done{color:var(--text3);text-decoration:line-through}
+.task-xp{font-family:var(--font-mono);font-size:10px;color:var(--text3);white-space:nowrap}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:.875rem}
+.metric-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:.875rem 1rem}
+.metric-box.gold-box{border-color:var(--gold);background:var(--gold-dim)}
+.metric-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-mono);margin-bottom:4px}
+.metric-val{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--text);line-height:1}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:3px;font-family:var(--font-mono)}
+.form-row{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;font-family:var(--font-mono)}
+input[type=text],input[type=number],input[type=date],select,textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text);font-family:var(--font-body);font-size:13px;padding:7px 10px;outline:none;transition:border .12s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold)}
+textarea{resize:vertical;min-height:65px;width:100%}
+select option{background:var(--bg3)}
+.btn{background:var(--gold);color:#000;border:none;border-radius:var(--r);padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;transition:all .12s;font-family:var(--font-display);letter-spacing:.06em;text-transform:uppercase}
+.btn:hover{background:var(--gold2);box-shadow:0 0 12px var(--gold-glow)}
+.btn.ghost{background:transparent;border:1px solid var(--border2);color:var(--text2);font-weight:500}
+.btn.ghost:hover{border-color:var(--text2);color:var(--text);background:var(--bg3)}
+.log-table{width:100%;border-collapse:collapse;font-size:12px}
+.log-table th{text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:6px 8px;border-bottom:1px solid var(--border);font-family:var(--font-mono);font-weight:500}
+.log-table td{padding:9px 8px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.log-table tr:last-child td{border-bottom:none}
+.log-table tr:hover td{background:var(--bg3)}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;font-family:var(--font-mono);font-weight:500}
+.badge.gold{background:var(--gold-dim);color:var(--gold)}.badge.blue{background:var(--blue-dim);color:var(--blue2)}.badge.green{background:var(--green-dim);color:var(--green)}.badge.red{background:var(--red-dim);color:var(--red)}.badge.purple{background:var(--purple-dim);color:var(--purple)}.badge.amber{background:var(--amber-dim);color:var(--amber)}.badge.cyan{background:var(--cyan-dim);color:var(--cyan)}
+.inner-tabs{display:flex;gap:5px;margin-bottom:1rem;flex-wrap:wrap}
+.inner-tab{padding:5px 12px;border:1px solid var(--border2);border-radius:var(--r);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;transition:all .12s;font-family:var(--font-mono)}
+.inner-tab.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:700}
+.inner-tab-content{display:none}.inner-tab-content.active{display:block}
+.del-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:2px 5px;border-radius:3px;transition:color .12s}
+.del-btn:hover{color:var(--red)}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--bg3);border:1px solid var(--gold);border-radius:var(--r);color:var(--gold);padding:9px 16px;font-size:12px;transform:translateY(50px);opacity:0;transition:all .2s;z-index:9998;pointer-events:none;font-family:var(--font-mono)}
+.toast.show{transform:translateY(0);opacity:1}
+.divider{height:1px;background:var(--border);margin:.875rem 0}
+.prog-bg{background:var(--bg4);border-radius:2px;height:5px}
+.prog-fill{height:5px;border-radius:2px;transition:width .4s}
+.empty{text-align:center;color:var(--text3);padding:1.5rem;font-size:12px;font-family:var(--font-mono)}
+.week-acc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:.625rem;overflow:hidden}
+.week-acc-header{display:flex;align-items:center;gap:10px;padding:.875rem 1.1rem;cursor:pointer;background:var(--bg3);transition:background .12s}
+.week-acc-header:hover{background:var(--bg4)}
+.week-acc-header.current{background:rgba(240,192,64,0.07);border-bottom:1px solid var(--gold)}
+.week-acc-body{display:none;padding:0}.week-acc-body.open{display:block}
+.day-block{border-bottom:1px solid var(--border)}.day-block:last-child{border-bottom:none}
+.day-header{display:flex;align-items:center;gap:8px;padding:.625rem 1.1rem;background:var(--bg3)}
+.day-header .dy{font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--text);min-width:36px}
+.day-header .dl{font-size:12px;color:var(--text2);flex:1}
+.day-header .dt{font-size:10px;color:var(--text3);font-family:var(--font-mono)}
+.session-block{padding:.75rem 1.1rem;border-bottom:1px solid var(--border)}.session-block:last-child{border-bottom:none}
+.session-label{font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-mono);font-weight:700;margin-bottom:7px}
+.plan-task{display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)}
+.plan-task:last-child{border-bottom:none}
+.plan-task .pt-min{font-family:var(--font-mono);font-size:10px;color:var(--text3);min-width:42px;text-align:right;flex-shrink:0}
+.chart-wrap{position:relative;width:100%;height:220px}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="sidebar-header"><div class="sidebar-title">SAN</div><div class="sidebar-sub">DAILY TRACKER // 2026</div>
+    <div id="sync-status" style="font-size:9px;color:var(--green);font-family:var(--font-mono);margin-top:4px;min-height:12px"></div></div>
+  <div class="level-badge">
+    <div><div style="font-size:9px;color:var(--text3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em">Level</div><div id="sb-level" class="lvl-num">1</div></div>
+    <div><div id="sb-lvl-title" class="lvl-title">Novice</div><div id="sb-streak" class="lvl-info">0 day streak</div></div>
+  </div>
+  <div class="xp-bar-wrap"><div class="xp-label"><span>XP</span><span id="sb-xp-label">0 / 500</span></div><div class="xp-bg"><div class="xp-fill" id="sb-xp-fill" style="width:0%"></div></div></div>
+  <nav>
+    <div class="nav-section">Daily</div>
+    <a class="nav-item active" onclick="nav('today')"><span class="nav-icon">📋</span>Tasks &amp; Calendar</a>
+    <div class="nav-section">UCAT</div>
+    <a class="nav-item" onclick="nav('ucat-overview')"><span class="nav-icon">📊</span>Overview</a>
+    <a class="nav-item" onclick="nav('ucat-mocks')"><span class="nav-icon">📝</span>Mocks</a>
+    <a class="nav-item" onclick="nav('ucat-drills')"><span class="nav-icon">🎯</span>Drills</a>
+    <a class="nav-item" onclick="nav('ucat-plan')"><span class="nav-icon">🗓</span>9-Week Plan</a>
+    <div class="nav-section">Fitness</div>
+    <a class="nav-item" onclick="nav('programme')"><span class="nav-icon">📋</span>Programme</a>
+    <a class="nav-item" onclick="nav('log')"><span class="nav-icon">💪</span>Log Workout</a>
+    <a class="nav-item" onclick="nav('weight')"><span class="nav-icon">⚖</span>Weight</a>
+    <div class="nav-section">Other</div>
+    <a class="nav-item" onclick="nav('skincare')"><span class="nav-icon">✨</span>Skincare</a>
+    <a class="nav-item" onclick="nav('history')"><span class="nav-icon">📜</span>History</a>
+  </nav>
+  <div class="streak-mini">
+    <div class="streak-mini-label">Last 14 days</div>
+    <div class="streak-dots" id="sb-streak-dots"></div>
+    <div style="display:flex;gap:10px;margin-top:6px;font-size:9px;font-family:var(--font-mono);color:var(--text3)">
+      <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:1px;background:var(--gold);display:inline-block"></span>Clear</span>
+      <span style="display:flex;align-items:center;gap:3px"><span style="width:8px;height:8px;border-radius:1px;background:var(--blue2);display:inline-block"></span>Partial</span>
+    </div>
+  </div>
+</aside>
+<main class="main">
+<!-- TODAY -->
+<div id="section-today" class="section active">
+  <!-- Header row -->
+  <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:.875rem">
+    <div class="page-title" id="today-greeting">DAILY TASKS</div>
+    <div id="today-date-label" style="font-size:13px;color:var(--text3);font-family:var(--font-mono)"></div>
+    <button id="back-to-today-btn" onclick="selectDay(today())" style="display:none;margin-left:auto;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);color:var(--text3);font-size:11px;font-family:var(--font-mono);padding:4px 10px;cursor:pointer">← today</button>
+  </div>
+  <div class="metric-grid" id="today-metrics"></div>
+  <!-- Split layout: calendar left, tasks right -->
+  <div style="display:flex;gap:1rem;align-items:flex-start">
+    <!-- LEFT: Calendar (sticky) -->
+    <div style="width:260px;flex-shrink:0;position:sticky;top:1rem">
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-family:var(--font-mono);margin-bottom:.5rem">Jun 23 → Aug 23 · tap any day</div>
+      <div class="card" style="padding:.625rem"><div id="cal-grid"></div></div>
+    </div>
+    <!-- RIGHT: Tasks (scrollable) -->
+    <div style="flex:1;min-width:0">
+      <div id="day-clear-banner" style="display:none;margin-bottom:.5rem;background:var(--green-dim);border:1px solid var(--green);border-radius:var(--r);padding:.625rem 1rem;font-size:12px;color:var(--green);font-family:var(--font-mono);text-align:center">All tasks done ✓</div>
+      <div id="quest-board"></div>
+      <!-- My Tasks -->
+      <div class="card" style="margin-top:.5rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
+          <div class="card-title" style="margin-bottom:0;color:var(--amber)">MY TASKS</div>
+        </div>
+        <div id="errands-list"></div>
+        <div style="display:flex;gap:8px;margin-top:.75rem">
+          <input type="text" id="errand-input" placeholder="Add a task for this day..." style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')addErrand()">
+          <button class="btn" onclick="addErrand()" style="padding:7px 14px">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UCAT OVERVIEW -->
+<div id="section-ucat-overview" class="section">
+  <div class="page-header"><div class="page-title">UCAT OVERVIEW</div><div class="page-sub">Exam: 3 Aug 2026 · Target: 2310 · Baseline: 1800 · <span id="ucat-days-left" style="color:var(--gold)"></span></div></div>
+  <div style="background:var(--gold-dim);border:1px solid var(--gold);border-radius:var(--r);padding:9px 13px;margin-bottom:.875rem;font-size:12px;color:var(--gold);line-height:1.6;font-family:var(--font-mono)">2025 mean: 1941 · 90th percentile: 2310 · You need +510 in 9 weeks</div>
+  <div class="metric-grid" id="ucat-metrics"></div>
+  <div class="card"><div class="card-title gold">Weekly milestones</div><div style="overflow-x:auto"><table class="log-table"><thead><tr><th>WK</th><th>Ends</th><th>Target</th><th>/section</th><th>Focus</th><th>Best</th><th>Status</th></tr></thead><tbody id="ucat-milestone-body"></tbody></table></div></div>
+  <div class="card"><div class="card-title blue">Score progress</div><div class="chart-wrap"><canvas id="ucat-chart">UCAT chart</canvas></div></div>
+</div>
+<!-- UCAT MOCKS -->
+<div id="section-ucat-mocks" class="section">
+  <div class="page-header"><div class="page-title">MOCKS</div><div class="page-sub">Medify full &amp; mini mocks</div></div>
+  <div class="card">
+    <div class="card-title gold">Log mock</div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="mock-date"></div>
+      <div class="form-group"><label>Name</label><input type="text" id="mock-name" placeholder="Medify Mock 1" style="min-width:150px"></div>
+      <div class="form-group"><label>Type</label><select id="mock-type"><option value="full">Full mock</option><option value="mini">Mini mock</option></select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>VR (300-900)</label><input type="number" id="mock-vr" placeholder="600" min="300" max="900" style="width:95px"></div>
+      <div class="form-group"><label>DM (300-900)</label><input type="number" id="mock-dm" placeholder="600" min="300" max="900" style="width:95px"></div>
+      <div class="form-group"><label>QR (300-900)</label><input type="number" id="mock-qr" placeholder="600" min="300" max="900" style="width:95px"></div>
+      <div class="form-group" style="align-self:flex-end"><div class="metric-lbl">Total</div><div id="mock-total-preview" style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--gold)">-</div></div>
+    </div>
+    <div class="form-group" style="margin-bottom:8px"><label>What to fix</label><textarea id="mock-fixes" placeholder="VR - ran out of time&#10;DM - syllogisms slow&#10;QR - calculator overuse"></textarea></div>
+    <div class="form-group" style="margin-bottom:12px"><label>What went well</label><textarea id="mock-well" placeholder="DM logic sets, finished QR with time to spare..."></textarea></div>
+    <button class="btn" onclick="saveMock()">Save mock</button>
+  </div>
+  <div class="card"><div class="card-title">History</div><div id="ucat-mocks-history"></div></div>
+</div>
+<!-- UCAT DRILLS -->
+<div id="section-ucat-drills" class="section">
+  <div class="page-header"><div class="page-title">SECTION DRILLS</div><div class="page-sub">Individual section practice on Medify</div></div>
+  <div class="card">
+    <div class="card-title gold">Log drill</div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="drill-date"></div>
+      <div class="form-group"><label>Section</label><select id="drill-section"><option value="VR">Verbal Reasoning</option><option value="DM">Decision Making</option><option value="QR">Quantitative Reasoning</option><option value="Mixed">Mixed</option></select></div>
+      <div class="form-group"><label>Questions done</label><input type="number" id="drill-qs" placeholder="100" style="width:80px"></div>
+      <div class="form-group"><label>% Correct</label><input type="number" id="drill-score" placeholder="72" min="0" max="100" style="width:75px"></div>
+      <div class="form-group"><label>Time (min)</label><input type="number" id="drill-time" placeholder="60" style="width:70px"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px"><label>Notes</label><textarea id="drill-notes" placeholder="Slow on stat questions, VR inference improving..." style="min-height:55px"></textarea></div>
+    <button class="btn" onclick="saveDrill()">Save drill</button>
+  </div>
+  <div class="card"><div class="card-title">History</div><div id="ucat-drills-history"></div></div>
+</div>
+<!-- UCAT 9-WEEK PLAN -->
+<!-- PROGRAMME -->
+<div id="section-programme" class="section">
+  <div class="page-header"><div class="page-title">PROGRAMME</div><div class="page-sub">From Jun 6, 2026 · Push/Pull/Legs × 2 (Legs × 1) · 1 warm-up per muscle group → 2 × failure</div></div>
+  <div class="inner-tabs">
+    <button class="inner-tab active" onclick="progTab('push',this)">Push</button>
+    <button class="inner-tab" onclick="progTab('pull',this)">Pull</button>
+    <button class="inner-tab" onclick="progTab('legs',this)">Legs</button>
+    <button class="inner-tab" onclick="progTab('ca',this)">Cardio + Abs</button>
+  </div>
+  <div id="prog-push" class="inner-tab-content active"><div class="card">
+    <div class="card-title gold">Push — Mon &amp; Thu · Chest / Shoulders / Triceps</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-bottom:.875rem;padding:7px 10px;background:var(--bg4);border-radius:var(--r)">1 warm-up per muscle group → 2 sets to failure. Chest warm-up on flat press only.</div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">Chest</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Flat chest press</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Incline chest press</span><span class="badge blue">2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Incline chest flies</span><span class="badge blue">2 × fail</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Shoulders</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Overhead shoulder press</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Lateral raises</span><span class="badge blue">2 × fail</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Triceps</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Skull crushers</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Dips</span><span class="badge blue">2 × fail</span></div>
+  </div></div>
+  <div id="prog-pull" class="inner-tab-content"><div class="card">
+    <div class="card-title gold">Pull — Tue &amp; Fri · Back / Rear Delt / Traps / Biceps</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-bottom:.875rem;padding:7px 10px;background:var(--bg4);border-radius:var(--r)">Chest-supported row = strict lats/rhomboids. Bent over row = thickness + traps. Pullover = full lat stretch. Rear delts on pull day — they're a pulling muscle.</div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">Back</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Chest-supported DB row</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Bent over DB rows</span><span class="badge blue">2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">DB pullovers (lying on bench)</span><span class="badge blue">2 × fail</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Rear Delt &amp; Traps</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Rear delt raises</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Trap shrugs</span><span class="badge blue">2 × fail</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Biceps</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Bicep curls</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Hammer curls</span><span class="badge blue">2 × fail</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Forearms</div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Wrist curls</span><span class="badge blue">2 × fail · palms up, forearms on thighs</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Reverse wrist curls</span><span class="badge blue">2 × fail · palms down</span></div>
+  </div></div>
+  <div id="prog-legs" class="inner-tab-content"><div class="card">
+    <div class="card-title gold">Legs — Saturday only</div>
+    <div style="font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-bottom:.875rem;padding:7px 10px;background:var(--bg4);border-radius:var(--r)">Legs once per week — high intensity to failure is sufficient. Go heavy on squats.</div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">Quads / Glutes</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Squats</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+    <div class="task-row"><span class="badge blue">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Lunges</span><span class="badge blue">2 × fail</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Calves</div>
+    <div class="task-row"><span class="badge gold">W+2</span><span style="font-size:13px;color:var(--text2);flex:1">Calf raises</span><span class="badge gold">1 warmup → 2 × fail</span></div>
+  </div></div>
+  <div id="prog-ca" class="inner-tab-content"><div class="card">
+    <div class="card-title gold">Cardio — Wednesday</div>
+    <div class="task-row"><span style="color:var(--text2);font-size:13px">30-45 min: Treadmill / incline walk / bike / row / stairmaster</span></div>
+    <div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin:12px 0 6px">Abs finisher</div>
+    <div class="task-row"><span class="badge purple">×2</span><span style="font-size:13px;color:var(--text2);flex:1">Plank × 2</span><span class="badge purple">to failure each</span></div>
+    <div class="task-row"><span style="font-size:13px;color:var(--text2);flex:1">Sit-ups</span><span class="badge purple">50 reps</span></div>
+    <div class="task-row"><span style="font-size:13px;color:var(--text2);flex:1">Crunches</span><span class="badge purple">50 reps</span></div>
+  </div></div>
+</div>
+<!-- UCAT PLAN -->
+<div id="section-ucat-plan" class="section">
+  <div class="page-header"><div class="page-title">9-WEEK PLAN</div><div class="page-sub">Jun 23 → Aug 3 · 5-6 hrs daily · 1800 → 2310 · Click any day in Tasks tab to see that day's tasks</div></div>
+  <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px;margin-bottom:.875rem;font-size:12px;color:var(--text2);line-height:1.7;font-family:var(--font-mono)"><strong style="color:var(--gold)">Daily floor:</strong> 100 VR + 80 DM + 80 QR across both sessions · Review wrong answers (10 min) first every evening · Mock days: mock IS the morning session</div>
+  <div id="ucat-plan-body"></div>
+</div>
+
+<!-- LOG WORKOUT -->
+<div id="section-log" class="section">
+  <div class="page-header"><div class="page-title">LOG WORKOUT</div><div class="page-sub">Record sets, reps and weight for each session</div></div>
+  <div class="card">
+    <div class="card-title gold">Session details</div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="log-date"></div>
+      <div class="form-group"><label>Type</label>
+        <select id="log-type" onchange="renderLogExercises()">
+          <option value="push">Push — Chest / Shoulders / Tris</option>
+          <option value="pull">Pull — Back / Bis / Traps / Forearms</option>
+          <option value="legs">Legs</option>
+          <option value="cardio">Cardio + Abs</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Duration (min)</label><input type="number" id="log-dur" placeholder="60" style="width:80px"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:10px"><label>Notes</label><textarea id="log-notes" placeholder="How did it feel? PRs? Energy..."></textarea></div>
+  </div>
+  <div class="card" id="log-ex-card">
+    <div class="card-title gold" id="log-ex-title">Exercises</div>
+    <div id="log-ex-body"></div>
+  </div>
+  <div class="card" id="log-cardio-card" style="display:none">
+    <div class="card-title gold">Cardio + Abs</div>
+    <div class="form-row">
+      <div class="form-group"><label>Cardio type</label>
+        <select id="log-cardio-type"><option>Treadmill run</option><option>Incline walk</option><option>Bike/spin</option><option>Rowing machine</option><option>Stairmaster</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Duration (min)</label><input type="number" id="log-cardio-dur" placeholder="35" style="width:80px"></div>
+      <div class="form-group"><label>Abs done?</label><select id="log-abs"><option value="yes">Yes</option><option value="no">No</option></select></div>
+    </div>
+    <div class="divider"></div>
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);font-family:var(--font-mono);margin-bottom:10px">Abs circuit</div>
+    <div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:6px;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:var(--text2)">Plank x2 to failure</span>
+      <input type="text" id="abs-plank" placeholder="e.g. 60s">
+      <input type="text" id="abs-plank-note" placeholder="notes">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:6px;align-items:center;margin-bottom:6px">
+      <span style="font-size:12px;color:var(--text2)">Sit-ups x50</span>
+      <input type="number" id="abs-situps" placeholder="50">
+      <input type="text" id="abs-situps-note" placeholder="notes">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 80px 1fr;gap:6px;align-items:center">
+      <span style="font-size:12px;color:var(--text2)">Crunches x50</span>
+      <input type="number" id="abs-crunches" placeholder="50">
+      <input type="text" id="abs-crunches-note" placeholder="notes">
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:4px">
+    <button class="btn" onclick="saveWorkout()">Save session</button>
+    <button class="btn ghost" onclick="clearLog()">Clear</button>
+  </div>
+  <div class="card" style="margin-top:1rem"><div class="card-title">History</div><div id="workout-history"></div></div>
+</div>
+<!-- WEIGHT -->
+<div id="section-weight" class="section">
+  <div class="page-header"><div class="page-title">WEIGHT</div><div class="page-sub">74 kg → 68 kg · goal by Aug 23 - ~556 kcal/day deficit</div></div>
+  <div class="metric-grid" id="wt-metrics"></div>
+  <div class="card">
+    <div class="card-title gold">Log weight</div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="wt-date"></div>
+      <div class="form-group"><label>Weight (kg)</label><input type="number" id="wt-val" step="0.1" placeholder="73.5" style="width:90px"></div>
+      <div class="form-group"><label>Notes</label><input type="text" id="wt-note" placeholder="morning, post-gym..." style="min-width:150px"></div>
+      <div class="form-group" style="justify-content:flex-end"><button class="btn" onclick="saveWeight()">Add</button></div>
+    </div>
+  </div>
+  <div class="card"><div class="card-title blue">Progress vs projection</div><div class="chart-wrap" style="height:240px"><canvas id="wt-chart">Weight chart</canvas></div></div>
+  <div class="card"><div class="card-title">Log</div><div id="wt-history"></div></div>
+</div>
+<!-- SKINCARE -->
+<div id="section-skincare" class="section">
+  <div class="page-header"><div class="page-title">SKINCARE</div><div class="page-sub">Adapalene every other night from Jun 3 - LRP Pigmentclar alternating nights from Jun 3</div></div>
+  <div class="metric-grid" id="skin-metrics"></div>
+  <div class="card"><div class="card-title gold">Tonight's routine</div><div id="skin-tonight"></div></div>
+  <div class="card">
+    <div class="card-title">Schedule - Jun 3 to Aug 24</div>
+    <div style="display:flex;gap:12px;margin-bottom:10px;font-size:10px;font-family:var(--font-mono);flex-wrap:wrap">
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:var(--purple);display:inline-block"></span>Adapalene</span>
+      <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:var(--cyan);display:inline-block"></span>LRP Pigmentclar</span>
+    </div>
+    <div id="skin-cal"></div>
+  </div>
+  <div class="card">
+    <div class="card-title gold">Log tonight</div>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="skin-date"></div>
+      <div class="form-group"><label>Adapalene applied?</label><select id="skin-ada" style="width:110px"><option value="">-</option><option value="yes">Yes</option><option value="no">Rest night</option><option value="skip">Skipped</option></select></div>
+      <div class="form-group"><label>LRP Pigmentclar?</label><select id="skin-lrp" style="width:110px"><option value="">-</option><option value="yes">Yes</option><option value="no">Rest night</option><option value="skip">Skipped</option></select></div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px"><label>Skin notes</label><textarea id="skin-notes" placeholder="Irritation? Peeling? Skin looks..." style="min-height:55px"></textarea></div>
+    <button class="btn" onclick="saveSkin()">Save</button>
+  </div>
+  <div class="card"><div class="card-title">Log history</div><div id="skin-history"></div></div>
+</div>
+<!-- HISTORY -->
+<div id="section-history" class="section">
+  <div class="page-header"><div class="page-title">HISTORY</div></div>
+  <div class="card">
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="filterHistory('all',this)">All</button>
+      
+      <button class="inner-tab" onclick="filterHistory('weight',this)">Weight</button>
+      <button class="inner-tab" onclick="filterHistory('ucat',this)">UCAT</button>
+      <button class="inner-tab" onclick="filterHistory('skin',this)">Skincare</button>
+    </div>
+    <div id="history-all"></div>
+  </div>
+</div>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// CONSTANTS
+const PROG_START=new Date('2026-06-23'),PROG_END=new Date('2026-08-23'),UCAT_EXAM=new Date('2026-08-03');
+const START_W=74,GOAL_W=68,UCAT_BASE=1800,UCAT_TARGET=2310;
+const LEVEL_THRESHOLDS=[0,500,1200,2200,3500,5200,7200,9800,13000,17000,22000];
+const LEVEL_TITLES=['Novice','Initiate','Apprentice','Practitioner','Scholar','Expert','Elite','Master','Grandmaster','Transcendent','Legendary'];
+// STORAGE
+const DB={
+  get:k=>{try{return JSON.parse(localStorage.getItem('sqx_'+k)||'[]')}catch(e){return[]}},
+  set:(k,v)=>localStorage.setItem('sqx_'+k,JSON.stringify(v)),
+  getObj:k=>{try{return JSON.parse(localStorage.getItem('sqx_'+k)||'null')}catch(e){return null}},
+  setObj:(k,v)=>localStorage.setItem('sqx_'+k,JSON.stringify(v)),
+};
+// UTILS
+function today(){return new Date().toISOString().slice(0,10)}
+function fmtDate(d){if(!d)return'-';const p=d.split('-');return p[2]+'/'+p[1]+'/'+p[0]}
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000)}
+function skinSched(ds){const i=daysBetween('2026-06-03',ds);if(i<0)return{ada:false,lrp:false};return{ada:i%2===0,lrp:i%2===1}}
+// CHARTS
+const charts={};
+function destroyChart(id){if(charts[id]){try{charts[id].destroy()}catch(e){}delete charts[id]}const c=document.getElementById(id);if(c){const x=Chart.getChart(c);if(x)try{x.destroy()}catch(e){}}}
+// XP / LEVEL
+function getTotalXP(){return DB.get('xp_log').reduce((a,b)=>a+(b.xp||0),0)}
+function addXP(amount,reason){const log=DB.get('xp_log');log.push({date:today(),xp:amount,reason,ts:Date.now()});DB.set('xp_log',log);updateSidebar()}
+function getLevel(xp){let lv=0;for(let i=0;i<LEVEL_THRESHOLDS.length;i++){if(xp>=LEVEL_THRESHOLDS[i])lv=i;else break}return lv}
+function updateSidebar(){
+  const xp=getTotalXP(),lv=getLevel(xp);
+  const next=LEVEL_THRESHOLDS[Math.min(lv+1,LEVEL_THRESHOLDS.length-1)],prev=LEVEL_THRESHOLDS[lv];
+  const pct=lv>=LEVEL_THRESHOLDS.length-1?100:Math.round(((xp-prev)/(next-prev))*100);
+  document.getElementById('sb-level').textContent=lv;
+  document.getElementById('sb-lvl-title').textContent=LEVEL_TITLES[lv]||'Legendary';
+  document.getElementById('sb-xp-label').textContent=xp+' / '+next+' XP';
+  document.getElementById('sb-xp-fill').style.width=pct+'%';
+  document.getElementById('sb-streak').textContent=getStreak()+' day streak';
+  renderStreakDots();
+}
+function getStreak(){
+  const clears=new Set(DB.get('day_clears').map(d=>d.date));
+  let s=0,d=new Date();
+  while(true){const ds=d.toISOString().slice(0,10);if(clears.has(ds)){s++;d.setDate(d.getDate()-1)}else break}
+  return s;
+}
+function renderStreakDots(){
+  const clears=new Set(DB.get('day_clears').map(d=>d.date));
+  const partials=new Set(DB.get('day_partials').map(d=>d.date));
+  let html='';
+  for(let i=13;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);html+=`<span class="sdot ${clears.has(ds)?'clear':partials.has(ds)?'partial':''}" title="${fmtDate(ds)}"></span>`}
+  document.getElementById('sb-streak-dots').innerHTML=html;
+}
+// NAVIGATION
+function nav(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('section-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active')});
+  if(id==='today'){renderCalendar();renderToday();}
+  if(id==='ucat-overview'){renderUcatMetrics();renderUcatMilestones();renderUcatChart();initUcatDates()}
+  if(id==='ucat-mocks'){initUcatDates();renderUcatMocksHistory()}
+  if(id==='ucat-drills'){initUcatDates();renderUcatDrillsHistory()}
+  if(id==='ucat-plan')renderUcatPlan();
+  if(id==='log'){initLogDates();renderLogExercises();renderWorkoutHistory();}
+  if(id==='weight'){renderWtMetrics();renderWtHistory();renderWtChart()}
+  if(id==='skincare'){renderSkinMetrics();renderSkinTonight();renderSkinCal();renderSkinHistory();initDates()}
+  if(id==='history')renderAllHistory('all');
+}
+// QUEST SYSTEM
+function getQuestsForDate(dateStr){
+  const d=new Date(dateStr+'T12:00:00'),dow=d.getDay();
+  const dayIdx=daysBetween('2026-06-23',dateStr);
+  const weekNum=Math.max(1,Math.min(9,Math.ceil((dayIdx+1)/7)));
+  const skin=skinSched(dateStr);
+  // PPL x2 split starting Jun 6
+  // Mon=Push, Tue=Pull, Wed=Cardio, Thu=Push, Fri=Pull, Sat=Legs, Sun=Rest
+  // But before Jun 6 2026, no gym (bench arrives Jun 5)
+  const gymStart = new Date('2026-06-06');
+  const thisDay = new Date(dateStr+'T12:00:00');
+  const gymActive = thisDay >= gymStart;
+  const liftMap={1:'push',2:'pull',4:'push',5:'pull',6:'legs'};
+  const isCardio = gymActive ? dow===3 : false;
+  const liftType = gymActive ? (liftMap[dow]||null) : null;
+  const isRest = !gymActive || dow===0;
+  const wkLabels={push:'Push',pull:'Pull',legs:'Legs'};
+  const quests=[];
+
+  // Everything before Jun 23 is disregarded — UCAT plan starts Jun 23
+  if(dateStr < '2026-06-23'){
+    return [];
+  }
+
+  // Morning
+  quests.push({id:'morning',icon:'🌅',name:'MORNING',color:'var(--amber)',xp:80,meta:'Wake · Hydrate · Set intentions',tasks:[
+    {id:'sleep',label:'8 hours sleep tracked',xp:40},
+    {id:'hydrate',label:'500ml water before anything else',xp:15},
+    {id:'breakfast',label:'Eat breakfast',xp:15},
+    {id:'plan',label:"Check today's quest board",xp:10},
+  ]});
+  // UCAT Morning
+  const ucatMorning=getPlanTasksForSession(dateStr,'morning');
+  const pd=getPlanDay(dateStr);
+  const wkLabel=pd?'Week '+pd.week.wk+' · '+pd.planDay.label:'Week '+weekNum;
+  const morningMins = pd ? pd.planDay.morning.reduce((a,t)=>a+(t.m||0),0) : 0;
+  const eveningMins = pd ? pd.planDay.evening.reduce((a,t)=>a+(t.m||0),0) : 0;
+  function fmtMins(m){const h=Math.floor(m/60),mn=m%60;return h>0?(h+'h'+(mn?mn+'m':'')):(mn+'m');}
+  quests.push({id:'ucat-morning',icon:'📚',name:'UCAT — MORNING',color:'var(--blue2)',xp:280,meta:(morningMins?fmtMins(morningMins)+' · ':'')+''+wkLabel,tasks:ucatMorning.length?ucatMorning:[{id:'no-plan',label:'No UCAT plan for this day',xp:0}]});
+  // Workout
+  const wkTasks=[];
+  if(liftType){
+    wkTasks.push({id:'show',label:'Get to the gym',xp:15});
+    wkTasks.push({id:'warmup',label:'1 warm-up set per muscle group (first exercise only)',xp:15});
+    wkTasks.push({id:'main',label:liftType==='pull'?'Complete all Pull sets to failure (incl. wrist curls + reverse wrist curls)':'Complete all '+wkLabels[liftType]+' sets to failure',xp:90});
+    wkTasks.push({id:'shower',label:'Shower',xp:10});
+    wkTasks.push({id:'log-w',label:'Log workout in tracker',xp:20});
+  } else if(isCardio){
+    wkTasks.push({id:'show',label:'Get moving',xp:15});
+    wkTasks.push({id:'cardio',label:'30-45 min cardio (any type)',xp:70});
+    wkTasks.push({id:'abs',label:'Abs circuit — plank x2 to failure, 50 sit-ups, 50 crunches',xp:50});
+    wkTasks.push({id:'shower',label:'Shower',xp:10});
+    wkTasks.push({id:'log-w',label:'Log cardio in tracker',xp:15});
+  } else {
+    wkTasks.push({id:'rest',label:'Active rest — light walk or stretching',xp:30});
+    wkTasks.push({id:'reflect',label:'Write one thing you want to improve this week',xp:20});
+  }
+  quests.push({id:'workout',icon:liftType?'💪':isCardio?'🏃':'😴',
+    name:liftType?wkLabels[liftType].toUpperCase()+' DAY':isCardio?'CARDIO + ABS':'REST / RECOVERY',
+    color:'var(--green)',xp:liftType?150:isCardio?160:50,
+    meta:liftType?'1-2 hrs · Gym · Shower after':isCardio?'30-45 min cardio + abs':'Active recovery',
+    tasks:wkTasks});
+  
+  const ucatEvening=getPlanTasksForSession(dateStr,'evening');
+  quests.push({id:'ucat-evening',icon:'🌆',name:'UCAT — EVENING',color:'var(--blue2)',xp:260,meta:(eveningMins?fmtMins(eveningMins)+' · ':'')+'Review + drills',tasks:ucatEvening.length?ucatEvening:[{id:'no-plan',label:'No UCAT plan for this day',xp:0}]});
+  // Night skincare
+  const nightTasks=[{id:'wash',label:'Wash face with gentle cleanser',xp:10}];
+  if(skin.ada) nightTasks.push({id:'ada',label:'Apply Adapalene — pea-size, dry skin, avoid eye area',xp:35});
+  else if(skin.lrp) nightTasks.push({id:'lrp',label:'Apply LRP Pigmentclar — after cleansing, before moisturiser',xp:35});
+  else nightTasks.push({id:'rest-night',label:'Moisturiser only — skin rest night',xp:15});
+  nightTasks.push({id:'moist',label:'Moisturiser',xp:10});
+  nightTasks.push({id:'log-skin',label:'Log skin routine in tracker',xp:10});
+  nightTasks.push({id:'sleep-prep',label:'In bed on time — 8 hrs before alarm',xp:30});
+  quests.push({id:'night',icon:'🌙',name:'SKINCARE',color:'var(--purple)',xp:95,
+    meta:skin.ada?'Adapalene night':skin.lrp?'LRP Pigmentclar night':'Moisturiser only',tasks:nightTasks});
+  return quests;
+}
+function getPlanDay(dateStr){
+  // Returns the UCAT_PLAN week+day object for a given date, or null
+  const planStart = new Date('2026-06-23');
+  const d = new Date(dateStr+'T12:00:00');
+  if(d < planStart) return null;
+  const dayIdx = Math.floor((d - planStart) / 86400000);
+  const weekIdx = Math.floor(dayIdx / 7);
+  if(weekIdx >= UCAT_PLAN.length) return null;
+  const week = UCAT_PLAN[weekIdx];
+  const dayName = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+  const planDay = week.days.find(d => d.day === dayName);
+  return planDay ? {week, planDay} : null;
+}
+
+function getPlanTasksForSession(dateStr, session){
+  // session = 'morning' or 'evening'
+  // Returns task array formatted for the daily checklist
+  const pd = getPlanDay(dateStr);
+  if(!pd) return [];
+  return (pd.planDay[session]||[])
+    .filter(t => t.t)
+    .map((t,i) => ({id: session+'-'+i, label: t.t+(t.m>0?' ('+t.m+' min)':''), xp:20}));
+}
+
+
+// RENDER TASKS
+// Tracks currently selected day
+let selectedDay = today();
+
+function renderToday(){ selectDay(today()); }
+
+function selectDay(dateStr){
+  selectedDay = dateStr;
+  const isToday = dateStr === today();
+  const d = new Date(dateStr+'T12:00:00');
+  const dn = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const mn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  // Update header
+  const h = new Date().getHours();
+  const greeting = isToday ? (h<12?'GOOD MORNING':'AFTERNOON'+(h>=17?'':'')+( h>=17?', SAN':'')) : dn[d.getDay()].toUpperCase();
+  document.getElementById('today-greeting').textContent = isToday ? (h<12?'GOOD MORNING, SAN':h<17?'AFTERNOON, SAN':'EVENING, SAN') : dn[d.getDay()].toUpperCase()+' '+d.getDate()+' '+mn[d.getMonth()];
+  document.getElementById('today-date-label').textContent = isToday ? dn[d.getDay()]+' · '+d.getDate()+' '+mn[d.getMonth()]+' '+d.getFullYear() : d.getFullYear();
+  const backBtn = document.getElementById('back-to-today-btn');
+  if(backBtn) backBtn.style.display = isToday ? 'none' : 'inline-block';
+
+  // Tasks
+  const saved = DB.getObj('quest_'+dateStr)||{};
+  const sections = getQuestsForDate(dateStr);
+  const totalTasks = sections.reduce((a,s)=>a+s.tasks.length,0);
+  const doneTasks = sections.reduce((a,s)=>a+s.tasks.filter(t=>saved[s.id+'_'+t.id]).length,0);
+  const allDone = doneTasks === totalTasks;
+
+  // Metrics
+  document.getElementById('today-metrics').innerHTML=`
+    <div class="metric-box ${isToday?'gold-box':''}"><div class="metric-lbl">Done</div><div class="metric-val">${doneTasks}</div><div class="metric-sub">of ${totalTasks} tasks</div></div>
+    <div class="metric-box"><div class="metric-lbl">Streak</div><div class="metric-val">${getStreak()}</div><div class="metric-sub">full days</div></div>
+    <div class="metric-box"><div class="metric-lbl">Level</div><div class="metric-val">${getLevel(getTotalXP())}</div><div class="metric-sub">${LEVEL_TITLES[getLevel(getTotalXP())]||''}</div></div>`;
+
+  // Task sections
+  let html = '';
+  sections.forEach(s=>{
+    const sectionDone = s.tasks.filter(t=>saved[s.id+'_'+t.id]).length;
+    const sDone = sectionDone === s.tasks.length;
+    const pct = Math.round((sectionDone/s.tasks.length)*100);
+    html += `<div class="task-card ${sDone?'done':'active'}" style="margin-bottom:.625rem">`;
+    html += `<div class="task-header" onclick="toggleSection('ts-${s.id}','tsa-${s.id}')">`;
+    html += `<span class="task-icon">${s.icon}</span>`;
+    html += `<div class="task-info"><div class="task-name" style="color:${sDone?'var(--green)':s.color}">${s.name}</div><div class="task-meta">${s.meta}</div></div>`;
+    html += `<span style="font-size:11px;color:${sDone?'var(--green)':'var(--text3)'};font-family:var(--font-mono);margin-right:6px">${sectionDone}/${s.tasks.length}</span>`;
+    html += `<span style="font-size:13px;color:var(--text3)" id="tsa-${s.id}">▾</span>`;
+    html += `</div>`;
+    html += `<div class="quest-body" id="ts-${s.id}" style="display:block">`;
+    html += `<div class="prog-bg" style="margin-bottom:10px"><div class="prog-fill" style="width:${pct}%;background:${s.color}"></div></div>`;
+    s.tasks.forEach(t=>{
+      const done = !!saved[s.id+'_'+t.id];
+      html += `<div class="task-row"><input type="checkbox" class="task-check" ${done?'checked':''} onchange="toggleTask('${dateStr}','${s.id}','${t.id}',this.checked)"><span class="task-label ${done?'done':''}">${t.label}</span></div>`;
+    });
+    html += `</div></div>`;
+  });
+  document.getElementById('quest-board').innerHTML = html;
+  document.getElementById('day-clear-banner').style.display = allDone ? 'block' : 'none';
+
+  // Errands
+  renderErrands(dateStr);
+
+  // Highlight selected day in calendar
+  document.querySelectorAll('[data-cal-day]').forEach(el=>{
+    const ds = el.getAttribute('data-cal-day');
+    el.style.outline = ds===dateStr ? '2px solid var(--gold)' : 'none';
+    el.style.outlineOffset = '1px';
+  });
+}
+
+function toggleSection(bodyId, arrId){
+  const b = document.getElementById(bodyId);
+  const arr = document.getElementById(arrId);
+  if(!b) return;
+  const open = b.style.display !== 'none';
+  b.style.display = open ? 'none' : 'block';
+  if(arr) arr.textContent = open ? '▸' : '▾';
+}
+function toggleTask(dateStr,questId,taskId,checked){
+  const key='quest_'+dateStr;
+  const saved=DB.getObj(key)||{};
+  saved[questId+'_'+taskId]=checked;
+  DB.setObj(key,saved);
+  if(checked){
+    const quests=getQuestsForDate(dateStr);
+    const q=quests.find(q=>q.id===questId);
+    const t=q&&q.tasks.find(t=>t.id===taskId);
+    if(t) addXP(t.xp,t.label);
+  }
+  const quests=getQuestsForDate(dateStr);
+  const allClear=quests.every(q=>q.tasks.every(t=>saved[q.id+'_'+t.id]));
+  if(allClear){const c=DB.get('day_clears');if(!c.find(x=>x.date===dateStr)){c.push({date:dateStr});DB.set('day_clears',c)}}
+  const anyDone=quests.some(q=>q.tasks.some(t=>saved[q.id+'_'+t.id]));
+  if(anyDone){const p=DB.get('day_partials');if(!p.find(x=>x.date===dateStr)){p.push({date:dateStr});DB.set('day_partials',p)}}
+  renderToday();updateSidebar();
+}
+// CALENDAR
+function renderCalendar(){
+  const clears=new Set(DB.get('day_clears').map(d=>d.date));
+  const partials=new Set(DB.get('day_partials').map(d=>d.date));
+  const start=new Date('2026-06-06'),end=new Date('2026-08-23'),todayStr=today();
+  const days=[];let cur=new Date(start);
+  while(cur<=end){days.push(new Date(cur));cur.setDate(cur.getDate()+1)}
+  const months={};
+  days.forEach(d=>{const mk=d.getFullYear()+'-'+d.getMonth();if(!months[mk])months[mk]={label:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]+' '+d.getFullYear(),days:[]};months[mk].days.push(d)});
+  let html='';
+  Object.values(months).forEach(m=>{
+    html+=`<div style="margin-bottom:1.25rem"><div style="font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text2);letter-spacing:.05em;margin-bottom:8px;text-transform:uppercase">${m.label}</div>`;
+    html+=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px">`;
+    ['S','M','T','W','T','F','S'].forEach(n=>html+=`<div style="text-align:center;font-size:9px;font-family:var(--font-mono);color:var(--text3);padding:2px 0">${n}</div>`);
+    html+=`</div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">`;
+    for(let i=0;i<m.days[0].getDay();i++) html+=`<div></div>`;
+    m.days.forEach(d=>{
+      const ds=d.toISOString().slice(0,10);
+      const isClear=clears.has(ds),isPartial=partials.has(ds)&&!isClear,isToday=ds===todayStr;
+      const bg=isClear?'var(--gold)':isPartial?'rgba(96,165,250,0.25)':'var(--bg4)';
+      const col=isClear?'#000':isToday?'var(--text)':'var(--text3)';
+      const border=isToday?'var(--gold)':'transparent';
+      html+=`<div data-cal-day="${ds}" onclick="selectDay('${ds}')" style="background:${bg};color:${col};border-radius:4px;padding:5px 2px;text-align:center;font-size:11px;font-family:var(--font-mono);cursor:pointer;border:1px solid ${border};transition:outline .1s">${d.getDate()}</div>`;
+    });
+    html+=`</div></div>`;
+  });
+  document.getElementById('cal-grid').innerHTML=html;
+}
+
+// EXERCISES / LOG
+function initDates(){['wt-date','skin-date','mock-date','drill-date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=today()})}
+// BADMINTON
+// WEIGHT
+function saveWeight(){
+  const dt=document.getElementById('wt-date').value,val=parseFloat(document.getElementById('wt-val').value);
+  if(!dt||isNaN(val)){toast('Enter date and weight');return}
+  const logs=DB.get('weights');logs.push({date:dt,w:val,note:document.getElementById('wt-note').value,created:Date.now()});DB.set('weights',logs);
+  toast(val.toFixed(1)+' kg logged');document.getElementById('wt-val').value='';document.getElementById('wt-note').value='';
+  renderWtMetrics();renderWtHistory();renderWtChart();updateSidebar();addXP(10,'Weight logged');
+}
+function renderWtMetrics(){
+  const logs=DB.get('weights').slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const cw=logs.length?logs[logs.length-1].w:START_W;
+  const lost=parseFloat((START_W-cw).toFixed(1)),rem=parseFloat((cw-GOAL_W).toFixed(1));
+  const pct=Math.min(100,Math.max(0,Math.round((lost/(START_W-GOAL_W))*100)));
+  const wks=Math.max(1,Math.round((PROG_END-new Date())/604800000));
+  const needed=rem>0?(rem*7700/(wks*7)).toFixed(0):0;
+  document.getElementById('wt-metrics').innerHTML=`
+    <div class="metric-box gold-box"><div class="metric-lbl">Current</div><div class="metric-val">${parseFloat(cw).toFixed(1)}</div><div class="metric-sub">kg</div></div>
+    <div class="metric-box"><div class="metric-lbl">Lost</div><div class="metric-val">${Math.max(0,lost)}</div><div class="metric-sub">kg</div></div>
+    <div class="metric-box"><div class="metric-lbl">To go</div><div class="metric-val">${Math.max(0,rem)}</div><div class="metric-sub">kg</div></div>
+    <div class="metric-box"><div class="metric-lbl">Progress</div><div class="metric-val">${pct}%</div><div class="metric-sub">of 6 kg goal</div></div>
+    <div class="metric-box"><div class="metric-lbl">Deficit</div><div class="metric-val">${needed}</div><div class="metric-sub">kcal/day</div></div>`;
+}
+function renderWtHistory(){
+  const logs=DB.get('weights').slice().reverse();const el=document.getElementById('wt-history');
+  if(!logs.length){el.innerHTML='<div class="empty">No entries yet.</div>';return}
+  const sorted=DB.get('weights').slice().sort((a,b)=>a.date.localeCompare(b.date));
+  el.innerHTML='<table class="log-table"><thead><tr><th>Date</th><th>Weight</th><th>Change</th><th>Notes</th><th></th></tr></thead><tbody>'+
+    logs.map((l,i)=>{const ri=logs.length-1-i;const prev=ri>0?sorted[ri-1].w:null;const chg=prev!==null?(l.w-prev).toFixed(1):'-';const col=chg!=='-'?(parseFloat(chg)<=0?'var(--gold)':'var(--red)'):'var(--text3)';
+      return `<tr><td>${fmtDate(l.date)}</td><td style="font-weight:700">${parseFloat(l.w).toFixed(1)} kg</td><td style="color:${col}">${chg!=='-'?(parseFloat(chg)>0?'+':'')+chg+' kg':'-'}</td><td>${l.note||'-'}</td><td><button class="del-btn" onclick="delWt(${ri})">x</button></td></tr>`;
+    }).join('')+'</tbody></table>';
+}
+function delWt(i){const logs=DB.get('weights');logs.splice(i,1);DB.set('weights',logs);renderWtMetrics();renderWtHistory();renderWtChart();toast('Deleted')}
+function renderWtChart(){
+  destroyChart('wt-chart');const canvas=document.getElementById('wt-chart');if(!canvas)return;
+  const logs=DB.get('weights').slice().sort((a,b)=>a.date.localeCompare(b.date));
+  const totalDays=Math.round((PROG_END-PROG_START)/86400000);
+  const projLabels=[],projData=[];
+  for(let i=0;i<=totalDays;i+=7){const d=new Date(PROG_START);d.setDate(d.getDate()+i);projLabels.push(d.toISOString().slice(0,10));projData.push(parseFloat((START_W-(START_W-GOAL_W)*(i/totalDays)).toFixed(2)))}
+  const allLabels=[...new Set([...projLabels,...logs.map(l=>l.date)])].sort();
+  const actualData=allLabels.map(d=>{const e=logs.find(l=>l.date===d);return e?e.w:null});
+  const projMapped=allLabels.map(d=>{const idx=projLabels.indexOf(d);return idx>=0?projData[idx]:null});
+  charts['wt-chart']=new Chart(canvas,{type:'line',data:{labels:allLabels.map(fmtDate),datasets:[
+    {data:projMapped,borderColor:'#243448',borderDash:[5,4],borderWidth:1.5,pointRadius:0,tension:0.2,spanGaps:true},
+    {data:actualData,borderColor:'#f0c040',backgroundColor:'rgba(240,192,64,0.08)',borderWidth:2,pointRadius:5,pointBackgroundColor:'#f0c040',tension:0.3,fill:true,spanGaps:false}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:66,max:75.5,ticks:{color:'#4a5a72',callback:v=>v+' kg'},grid:{color:'#111720'}},x:{ticks:{color:'#4a5a72',maxRotation:45,autoSkip:true,maxTicksLimit:10},grid:{color:'#111720'}}}}});
+}
+// SKINCARE
+function renderSkinMetrics(){
+  const logs=DB.get('skin_log');
+  const adaDone=logs.filter(l=>l.ada==='yes').length,lrpDone=logs.filter(l=>l.lrp==='yes').length;
+  let streak=0,d=new Date();const doneSet=new Set(logs.filter(l=>l.ada==='yes'||l.lrp==='yes').map(l=>l.date));
+  while(true){const ds=d.toISOString().slice(0,10);if(doneSet.has(ds)){streak++;d.setDate(d.getDate()-1)}else break}
+  document.getElementById('skin-metrics').innerHTML=`
+    <div class="metric-box gold-box"><div class="metric-lbl">Adapalene nights</div><div class="metric-val">${adaDone}</div><div class="metric-sub">logged</div></div>
+    <div class="metric-box"><div class="metric-lbl">LRP nights</div><div class="metric-val">${lrpDone}</div><div class="metric-sub">logged</div></div>
+    <div class="metric-box"><div class="metric-lbl">Routine streak</div><div class="metric-val">${streak}</div><div class="metric-sub">nights</div></div>
+    <div class="metric-box"><div class="metric-lbl">Total nights</div><div class="metric-val">${logs.length}</div><div class="metric-sub">logged</div></div>`;
+}
+function renderSkinTonight(){
+  const s=skinSched(today());
+  let html=s.ada?`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><span style="width:10px;height:10px;border-radius:50%;background:var(--purple);display:inline-block;flex-shrink:0"></span><span style="font-size:13px;color:var(--text2)">Adapalene night — pea-size, dry skin, avoid eye area</span></div>`:
+    s.lrp?`<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)"><span style="width:10px;height:10px;border-radius:50%;background:var(--cyan);display:inline-block;flex-shrink:0"></span><span style="font-size:13px;color:var(--text2)">LRP Pigmentclar night — after cleansing, before moisturiser</span></div>`:
+    `<div style="font-size:13px;color:var(--text3);padding:10px 0">Moisturiser only tonight — skin recovery</div>`;
+  html+=`<div style="padding:10px 0"><span style="font-size:13px;color:var(--text2)">Moisturiser (every night)</span></div>`;
+  document.getElementById('skin-tonight').innerHTML=html;
+}
+function renderSkinCal(){
+  const logs=DB.get('skin_log'),logMap={};logs.forEach(l=>logMap[l.date]=l);
+  const start=new Date('2026-06-06'),end=new Date('2026-08-23');
+  let html='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px">';
+  ['S','M','T','W','T','F','S'].forEach(n=>html+=`<div style="text-align:center;font-size:9px;font-family:var(--font-mono);color:var(--text3);padding-bottom:3px">${n}</div>`);
+  for(let i=0;i<start.getDay();i++) html+=`<div></div>`;
+  let cur=new Date(start);
+  while(cur<=end){
+    const ds=cur.toISOString().slice(0,10),s=skinSched(ds),log=logMap[ds];
+    let dots='<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">';
+    if(s.ada) dots+=`<span style="width:5px;height:5px;border-radius:50%;background:${log&&log.ada==='yes'?'var(--purple)':'var(--bg4)'}"></span>`;
+    if(s.lrp) dots+=`<span style="width:5px;height:5px;border-radius:50%;background:${log&&log.lrp==='yes'?'var(--cyan)':'var(--bg4)'}"></span>`;
+    dots+=`</div>`;
+    html+=`<div style="background:var(--bg3);border-radius:3px;padding:3px 1px;text-align:center;font-size:9px;font-family:var(--font-mono);color:var(--text3);border:1px solid ${ds===today()?'var(--gold)':'transparent'}">${cur.getDate()}${dots}</div>`;
+    cur.setDate(cur.getDate()+1);
+  }
+  html+='</div>';
+  document.getElementById('skin-cal').innerHTML=html;
+}
+function saveSkin(){
+  const dt=document.getElementById('skin-date').value;if(!dt){toast('Pick a date');return}
+  const entry={date:dt,ada:document.getElementById('skin-ada').value,lrp:document.getElementById('skin-lrp').value,notes:document.getElementById('skin-notes').value,created:Date.now()};
+  const logs=DB.get('skin_log'),existIdx=logs.findIndex(l=>l.date===dt);
+  if(existIdx>=0)logs[existIdx]=entry;else logs.push(entry);
+  DB.set('skin_log',logs);
+  toast('Skincare logged');document.getElementById('skin-notes').value='';document.getElementById('skin-ada').value='';document.getElementById('skin-lrp').value='';
+  renderSkinMetrics();renderSkinCal();renderSkinHistory();addXP(20,'Skincare logged');
+}
+function renderSkinHistory(){
+  const logs=DB.get('skin_log').slice().reverse();const el=document.getElementById('skin-history');
+  if(!logs.length){el.innerHTML='<div class="empty">No entries yet.</div>';return}
+  el.innerHTML='<table class="log-table"><thead><tr><th>Date</th><th>Adapalene</th><th>LRP</th><th>Notes</th><th></th></tr></thead><tbody>'+
+    logs.map((l,i)=>`<tr><td>${fmtDate(l.date)}</td><td style="color:${l.ada==='yes'?'var(--purple)':l.ada==='skip'?'var(--red)':'var(--text3)'};font-weight:600">${l.ada||'-'}</td><td style="color:${l.lrp==='yes'?'var(--cyan)':l.lrp==='skip'?'var(--red)':'var(--text3)'};font-weight:600">${l.lrp||'-'}</td><td style="max-width:200px">${l.notes||'-'}</td><td><button class="del-btn" onclick="delSkin(${logs.length-1-i})">x</button></td></tr>`).join('')+
+    '</tbody></table>';
+}
+function delSkin(i){const logs=DB.get('skin_log');logs.splice(i,1);DB.set('skin_log',logs);renderSkinMetrics();renderSkinCal();renderSkinHistory();toast('Deleted')}
+
+// LOG WORKOUT
+const EXERCISES={
+  push:[
+    {name:'Flat chest press',muscle:'Chest',warmup:true},
+    {name:'Incline chest press',muscle:'Chest',warmup:false},
+    {name:'Incline chest flies',muscle:'Chest',warmup:false},
+    {name:'Overhead shoulder press',muscle:'Shoulders',warmup:true},
+    {name:'Lateral raises',muscle:'Shoulders',warmup:false},
+    {name:'Skull crushers',muscle:'Triceps',warmup:true},
+    {name:'Dips',muscle:'Triceps',warmup:false},
+  ],
+  pull:[
+    {name:'Chest-supported DB row',muscle:'Back',warmup:true},
+    {name:'Bent over DB rows',muscle:'Back',warmup:false},
+    {name:'DB pullovers (lying)',muscle:'Back / Lats',warmup:false},
+    {name:'Rear delt raises',muscle:'Rear delt',warmup:true},
+    {name:'Trap shrugs',muscle:'Traps',warmup:false},
+    {name:'Bicep curls',muscle:'Biceps',warmup:true},
+    {name:'Hammer curls',muscle:'Biceps',warmup:false},
+    {name:'Wrist curls',muscle:'Forearms',warmup:false},
+    {name:'Reverse wrist curls',muscle:'Forearms',warmup:false},
+  ],
+  legs:[
+    {name:'Squats',muscle:'Quads',warmup:true},
+    {name:'Lunges',muscle:'Quads / Glutes',warmup:false},
+    {name:'Calf raises',muscle:'Calves',warmup:true},
+  ],
+};
+function initLogDates(){
+  const el=document.getElementById('log-date');
+  if(el&&!el.value) el.value=today();
+}
+function clearLog(){
+  const n=document.getElementById('log-notes');if(n)n.value='';
+  const d=document.getElementById('log-dur');if(d)d.value='';
+  renderLogExercises();
+}
+function renderLogExercises(){
+  const typeEl=document.getElementById('log-type');if(!typeEl)return;
+  const t=typeEl.value,cardio=t==='cardio';
+  const exCard=document.getElementById('log-ex-card');
+  const caCard=document.getElementById('log-cardio-card');
+  if(exCard) exCard.style.display=cardio?'none':'block';
+  if(caCard) caCard.style.display=cardio?'block':'none';
+  if(cardio) return;
+  const titleEl=document.getElementById('log-ex-title');
+  if(titleEl) titleEl.textContent='Exercises — '+{push:'Push',pull:'Pull',legs:'Legs'}[t];
+  const exs=EXERCISES[t]||[];
+  const groups=[];
+  exs.forEach(e=>{const last=groups[groups.length-1];if(last&&last.muscle===e.muscle)last.items.push(e);else groups.push({muscle:e.muscle,items:[e]})});
+  let html='';
+  groups.forEach(g=>{
+    html+=`<div style="margin-bottom:1.25rem"><div style="font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);font-family:var(--font-mono);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)">${g.muscle}</div>`;
+    g.items.forEach(e=>{
+      const idx=exs.indexOf(e);
+      html+=`<div style="margin-bottom:12px"><div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:8px">${e.name}${e.warmup?'<span style="font-size:9px;color:var(--text3);background:var(--bg4);padding:1px 6px;border-radius:3px;font-family:var(--font-mono)">warmup first</span>':''}</div>`;
+      if(e.warmup){
+        html+=`<div style="display:grid;grid-template-columns:90px 1fr 1fr 80px;gap:5px;align-items:center;margin-bottom:4px">`;
+        html+=`<span style="font-size:10px;color:var(--text3);background:var(--bg4);padding:4px 8px;border-radius:4px;text-align:center;font-family:var(--font-mono)">Warm-up</span>`;
+        html+=`<input type="number" id="ex-w-reps-${idx}" placeholder="reps"><input type="text" id="ex-w-note-${idx}" placeholder="easy / light"><input type="number" id="ex-w-wt-${idx}" step="0.5" placeholder="kg"></div>`;
+      }
+      [1,2].forEach(s=>{
+        html+=`<div style="display:grid;grid-template-columns:90px 1fr 1fr 80px;gap:5px;align-items:center;margin-bottom:4px">`;
+        html+=`<span style="font-size:10px;color:var(--gold);background:var(--gold-dim);padding:4px 8px;border-radius:4px;text-align:center;font-family:var(--font-mono);font-weight:700">Fail ${s}</span>`;
+        html+=`<input type="number" id="ex-s${s}-reps-${idx}" placeholder="reps"><input type="text" id="ex-s${s}-note-${idx}" placeholder="note"><input type="number" id="ex-s${s}-wt-${idx}" step="0.5" placeholder="kg"></div>`;
+      });
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  });
+  const body=document.getElementById('log-ex-body');if(body) body.innerHTML=html;
+}
+function saveWorkout(){
+  const typeEl=document.getElementById('log-type');
+  const t=typeEl?typeEl.value:'push';
+  const dt=document.getElementById('log-date')?.value;
+  if(!dt){toast('Pick a date');return;}
+  const dur=document.getElementById('log-dur')?.value;
+  const notes=document.getElementById('log-notes')?.value;
+  let entry={type:t==='cardio'?'cardio':'lift',subtype:t,date:dt,duration:dur,notes,created:Date.now()};
+  if(t==='cardio'){
+    entry.cardioType=document.getElementById('log-cardio-type')?.value;
+    entry.cardioDur=document.getElementById('log-cardio-dur')?.value;
+    entry.abs=document.getElementById('log-abs')?.value;
+    entry.absData={
+      plank:{val:document.getElementById('abs-plank')?.value||''},
+      situps:{val:document.getElementById('abs-situps')?.value||''},
+      crunches:{val:document.getElementById('abs-crunches')?.value||''}
+    };
+  } else {
+    const exs=EXERCISES[t]||[];
+    entry.exercises=exs.map((e,i)=>({
+      name:e.name,muscle:e.muscle,
+      warmup:{reps:document.getElementById('ex-w-reps-'+i)?.value||'',weight:document.getElementById('ex-w-wt-'+i)?.value||'',note:document.getElementById('ex-w-note-'+i)?.value||''},
+      set1:{reps:document.getElementById('ex-s1-reps-'+i)?.value||'',weight:document.getElementById('ex-s1-wt-'+i)?.value||'',note:document.getElementById('ex-s1-note-'+i)?.value||''},
+      set2:{reps:document.getElementById('ex-s2-reps-'+i)?.value||'',weight:document.getElementById('ex-s2-wt-'+i)?.value||'',note:document.getElementById('ex-s2-note-'+i)?.value||''}
+    }));
+  }
+  const logs=DB.get('workouts');logs.push(entry);DB.set('workouts',logs);
+  toast('Session saved');clearLog();renderWorkoutHistory();
+}
+function renderWorkoutHistory(){
+  const logs=DB.get('workouts').slice().reverse();
+  const el=document.getElementById('workout-history');if(!el)return;
+  if(!logs.length){el.innerHTML='<div class="empty">No sessions logged yet.</div>';return;}
+  const typeLabel={push:'Push',pull:'Pull',legs:'Legs',cardio:'Cardio'};
+  const typeCol={push:'blue',pull:'green',legs:'amber',cardio:'purple'};
+  el.innerHTML=logs.map((l,i)=>{
+    const ri=logs.length-1-i;
+    let html=`<div style="padding:10px 0;border-bottom:1px solid var(--border)">`;
+    html+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap">`;
+    html+=`<span class="badge ${typeCol[l.subtype]||'blue'}">${typeLabel[l.subtype]||l.subtype}</span>`;
+    html+=`<span style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${fmtDate(l.date)}</span>`;
+    if(l.duration) html+=`<span style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${l.duration} min</span>`;
+    html+=`<button class="del-btn" style="margin-left:auto" onclick="delWorkout(${ri})">×</button></div>`;
+    if(l.exercises){
+      const filled=l.exercises.filter(x=>x.set1?.reps||x.set1?.weight);
+      if(filled.length) html+=`<div style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${filled.map(x=>`${x.name}${x.set1.weight?' @'+x.set1.weight+'kg':''}${x.set1.reps?' '+x.set1.reps+'/'+x.set2.reps+'reps':''}`).join(' · ')}</div>`;
+    }
+    if(l.notes) html+=`<div style="font-size:12px;color:var(--text2);margin-top:3px;font-style:italic">"${l.notes}"</div>`;
+    html+=`</div>`;
+    return html;
+  }).join('');
+}
+function delWorkout(i){const logs=DB.get('workouts');logs.splice(i,1);DB.set('workouts',logs);renderWorkoutHistory();toast('Deleted');}
+
+
+// ERRANDS
+function renderErrands(dateStr){
+  const key='errands_'+dateStr;
+  const items=DB.get(key);
+  const el=document.getElementById('errands-list');
+  if(!el)return;
+  if(!items.length){el.innerHTML='<div style="font-size:12px;color:var(--text3);font-family:var(--font-mono);padding:4px 0">No tasks yet</div>';return}
+  el.innerHTML=items.map((item,i)=>`<div class="task-row"><input type="checkbox" class="task-check" ${item.done?'checked':''} onchange="toggleErrand('${dateStr}',${i},this.checked)"><span class="task-label ${item.done?'done':''}" style="flex:1">${item.text}</span><button class="del-btn" onclick="deleteErrand('${dateStr}',${i})">×</button></div>`).join('');
+}
+function addErrand(){
+  const input=document.getElementById('errand-input');
+  const text=input.value.trim();if(!text)return;
+  const dateStr=selectedDay||today();
+  const items=DB.get('errands_'+dateStr);
+  items.push({text,done:false,created:Date.now()});
+  DB.set('errands_'+dateStr,items);
+  input.value='';renderErrands(dateStr);
+}
+function toggleErrand(dateStr,idx,checked){
+  const items=DB.get('errands_'+dateStr);
+  if(items[idx])items[idx].done=checked;
+  DB.set('errands_'+dateStr,items);renderErrands(dateStr);
+}
+function deleteErrand(dateStr,idx){
+  const items=DB.get('errands_'+dateStr);
+  items.splice(idx,1);DB.set('errands_'+dateStr,items);renderErrands(dateStr);
+}
+
+
+// PLAN FOR DAY — injects UCAT 9-week plan into the daily view
+function renderPlanForDay(dateStr){
+  const el = document.getElementById('plan-for-day');
+  if(!el) return;
+  const pd = getPlanDay(dateStr);
+  if(!pd){ el.style.display='none'; return; }
+  const week = pd.week, planDay = pd.planDay;
+  el.style.display = 'block';
+  const totalMin = [...planDay.morning,...planDay.evening].reduce((a,t)=>a+(t.m||0),0);
+  const hrs = Math.floor(totalMin/60), mins = totalMin%60;
+  let html = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:.75rem;cursor:pointer" onclick="toggleSection('plan-body','plan-arr')">`;
+  html += `<span style="font-size:16px">📖</span>`;
+  html += `<div style="flex:1"><div style="font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--blue2)">UCAT — WEEK ${week.wk} · ${planDay.label}</div>`;
+  html += `<div style="font-size:10px;color:var(--text3);font-family:var(--font-mono)">${week.theme} · target ${week.target} · ${totalMin>0?'~'+hrs+'h'+(mins?mins+'m':''):'exam day'}</div></div>`;
+  html += `<span style="font-size:13px;color:var(--text3)" id="plan-arr">▾</span></div>`;
+  html += `<div id="plan-body">`;
+  html += `<div style="font-size:11px;color:var(--text3);font-style:italic;margin-bottom:.75rem;padding:6px 10px;background:var(--bg4);border-radius:var(--r);font-family:var(--font-mono)">${week.note}</div>`;
+  // Morning
+  html += `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-mono);font-weight:700;color:var(--amber);margin-bottom:6px">☀ Morning</div>`;
+  planDay.morning.forEach(t=>{ if(!t.t) return;
+    html += `<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)"><span style="flex:1">${t.t}</span><span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);flex-shrink:0">${t.m>0?t.m+' min':''}</span></div>`;
+  });
+  // Evening
+  html += `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;font-family:var(--font-mono);font-weight:700;color:var(--blue2);margin:10px 0 6px">🌙 Evening</div>`;
+  planDay.evening.forEach(t=>{ if(!t.t) return;
+    html += `<div style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)"><span style="flex:1">${t.t}</span><span style="font-family:var(--font-mono);font-size:10px;color:var(--text3);flex-shrink:0">${t.m>0?t.m+' min':''}</span></div>`;
+  });
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+// UCAT
+const UCAT_WEEKS=[
+  {wk:1,ends:'2026-06-29',target:1900,focus:'Format mastery — every question type, first mock Friday'},
+  {wk:2,ends:'2026-07-06',target:2000,focus:'QR mastery + VR speed — biggest gains week'},
+  {wk:3,ends:'2026-07-13',target:2100,focus:'Full mocks every 2 days + surgical weak section'},
+  {wk:4,ends:'2026-07-20',target:2200,focus:'Timed pressure — everything against the clock'},
+  {wk:5,ends:'2026-07-27',target:2270,focus:'Exam simulation — same time as booking daily'},
+  {wk:6,ends:'2026-08-03',target:2310,focus:'Taper — light Tue/Wed, rest Thu/Fri/Sat/Sun, exam Mon'},
+];
+function initUcatDates(){
+  const daysLeft=Math.max(0,Math.ceil((UCAT_EXAM-new Date())/86400000));
+  const el=document.getElementById('ucat-days-left');if(el)el.textContent=daysLeft+' days to go';
+  const md=document.getElementById('mock-date');if(md&&!md.value)md.value=today();
+  const dd=document.getElementById('drill-date');if(dd&&!dd.value)dd.value=today();
+  const vr=document.getElementById('mock-vr');
+  if(vr&&!vr._wired){['mock-vr','mock-dm','mock-qr'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateMockPreview)});vr._wired=true}
+}
+function updateMockPreview(){
+  const vr=parseInt(document.getElementById('mock-vr').value)||0;
+  const dm=parseInt(document.getElementById('mock-dm').value)||0;
+  const qr=parseInt(document.getElementById('mock-qr').value)||0;
+  const tot=(vr&&dm&&qr)?vr+dm+qr:null;
+  const el=document.getElementById('mock-total-preview');
+  if(tot){el.textContent=tot;el.style.color=tot>=UCAT_TARGET?'var(--gold)':tot>=2100?'var(--amber)':'var(--red)'}else{el.textContent='-';el.style.color='var(--gold)'}
+}
+function renderUcatMetrics(){
+  const mocks=DB.get('ucat_mocks').filter(m=>m.vr&&m.dm&&m.qr).sort((a,b)=>a.date.localeCompare(b.date));
+  const best=mocks.length?Math.max(...mocks.map(m=>m.total)):UCAT_BASE;
+  const latest=mocks.length?mocks[mocks.length-1].total:UCAT_BASE;
+  const gain=latest-UCAT_BASE,still=Math.max(0,UCAT_TARGET-latest);
+  const daysLeft=Math.max(1,Math.ceil((UCAT_EXAM-new Date())/86400000));
+  document.getElementById('ucat-metrics').innerHTML=`
+    <div class="metric-box gold-box"><div class="metric-lbl">Latest mock</div><div class="metric-val">${latest}</div><div class="metric-sub">/ 2700</div></div>
+    <div class="metric-box"><div class="metric-lbl">Best mock</div><div class="metric-val">${best}</div><div class="metric-sub">/ 2700</div></div>
+    <div class="metric-box"><div class="metric-lbl">Gained</div><div class="metric-val" style="color:${gain>=0?'var(--gold)':'var(--red)'}">${gain>=0?'+':''}${gain}</div><div class="metric-sub">from 1800</div></div>
+    <div class="metric-box"><div class="metric-lbl">Still needed</div><div class="metric-val" style="color:${still===0?'var(--gold)':'var(--amber)'}">${still}</div><div class="metric-sub">pts to 2310</div></div>
+    <div class="metric-box"><div class="metric-lbl">Days left</div><div class="metric-val">${daysLeft}</div><div class="metric-sub">until 3 Aug</div></div>
+    <div class="metric-box"><div class="metric-lbl">Mocks done</div><div class="metric-val">${mocks.length}</div><div class="metric-sub">logged</div></div>`;
+}
+function renderUcatMilestones(){
+  const mocks=DB.get('ucat_mocks').filter(m=>m.vr&&m.dm&&m.qr).sort((a,b)=>a.date.localeCompare(b.date));
+  const tbody=document.getElementById('ucat-milestone-body');if(!tbody)return;
+  const now=new Date();
+  tbody.innerHTML=UCAT_WEEKS.map(w=>{
+    const weekEnd=new Date(w.ends);
+    const inWin=mocks.filter(m=>new Date(m.date)<=weekEnd);
+    const best=inWin.length?Math.max(...inWin.map(m=>m.total)):null;
+    const isPast=weekEnd<now,isCurrent=!isPast&&(w.wk===1||new Date(UCAT_WEEKS[w.wk-2].ends)<now);
+    let status,col;
+    if(best!==null){if(best>=w.target){status='On track';col='var(--gold)'}else{status='Behind';col='var(--red)'}}
+    else if(isPast){status='No mock';col='var(--text3)'}
+    else if(isCurrent){status='Now';col='var(--amber)'}
+    else{status='Upcoming';col='var(--text3)'}
+    return `<tr style="${isCurrent?'background:var(--gold-dim)':''}"><td style="font-weight:700;color:var(--text);font-family:var(--font-mono)">W${w.wk}</td><td style="font-family:var(--font-mono)">${fmtDate(w.ends)}</td><td style="color:var(--gold);font-weight:700;font-family:var(--font-mono)">${w.target}</td><td style="color:var(--text3);font-family:var(--font-mono)">~${Math.round(w.target/3)}</td><td style="color:var(--text2);font-size:11px;max-width:160px">${w.focus}</td><td style="font-weight:700;font-family:var(--font-mono);color:${best&&best>=w.target?'var(--gold)':best?'var(--red)':'var(--text3)'}">${best||'-'}</td><td style="color:${col};font-size:11px;font-family:var(--font-mono)">${status}</td></tr>`;
+  }).join('');
+}
+function renderUcatChart(){
+  destroyChart('ucat-chart');const canvas=document.getElementById('ucat-chart');if(!canvas)return;
+  const mocks=DB.get('ucat_mocks').filter(m=>m.vr&&m.dm&&m.qr).sort((a,b)=>a.date.localeCompare(b.date));
+  const projLabels=['2026-06-23',...UCAT_WEEKS.map(w=>w.ends)];
+  const projData=[UCAT_BASE,...UCAT_WEEKS.map(w=>w.target)];
+  const allLabels=[...new Set([...projLabels,...mocks.map(m=>m.date)])].sort();
+  charts['ucat-chart']=new Chart(canvas,{type:'line',data:{labels:allLabels.map(fmtDate),datasets:[
+    {data:allLabels.map(d=>{const idx=projLabels.indexOf(d);return idx>=0?projData[idx]:null}),borderColor:'#243448',borderDash:[5,4],borderWidth:1.5,pointRadius:2,tension:0,spanGaps:true},
+    {data:allLabels.map(d=>{const m=mocks.find(x=>x.date===d);return m?m.total:null}),borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,0.1)',borderWidth:2,pointRadius:6,pointBackgroundColor:'#3b82f6',tension:0.2,fill:true,spanGaps:false},
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:1700,max:2400,ticks:{color:'#4a5a72',font:{size:10}},grid:{color:'#111720'}},x:{ticks:{color:'#4a5a72',maxRotation:45,autoSkip:true,maxTicksLimit:10,font:{size:10}},grid:{color:'#111720'}}}}});
+}
+function saveMock(){
+  const dt=document.getElementById('mock-date').value,name=document.getElementById('mock-name').value.trim(),type=document.getElementById('mock-type').value;
+  const vr=parseInt(document.getElementById('mock-vr').value)||null,dm=parseInt(document.getElementById('mock-dm').value)||null,qr=parseInt(document.getElementById('mock-qr').value)||null;
+  if(!dt){toast('Pick a date');return}if(!vr&&!dm&&!qr){toast('Enter at least one score');return}
+  const total=(vr||0)+(dm||0)+(qr||0);
+  const entry={date:dt,name:name||type+' - '+fmtDate(dt),type,vr,dm,qr,total,fixes:document.getElementById('mock-fixes').value,well:document.getElementById('mock-well').value,created:Date.now()};
+  const logs=DB.get('ucat_mocks');logs.push(entry);DB.set('ucat_mocks',logs);
+  toast('Mock saved');['mock-name','mock-vr','mock-dm','mock-qr','mock-fixes','mock-well'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('mock-total-preview').textContent='-';
+  addXP(100,'Mock logged');renderUcatMocksHistory();
+}
+function renderUcatMocksHistory(){
+  const mocks=DB.get('ucat_mocks').slice().reverse();const el=document.getElementById('ucat-mocks-history');
+  if(!mocks.length){el.innerHTML='<div class="empty">No mocks logged yet.</div>';return}
+  el.innerHTML=mocks.map((m,i)=>{
+    const total=(m.vr||0)+(m.dm||0)+(m.qr||0);
+    const col=total>=UCAT_TARGET?'var(--gold)':total>=2100?'var(--amber)':'var(--red)';
+    return `<div style="padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+        <span class="badge ${m.type==='mini'?'purple':'blue'}">${m.type}</span>
+        <span style="font-weight:700;color:var(--text);font-size:13px">${m.name||'Mock'}</span>
+        <span style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${fmtDate(m.date)}</span>
+        <span style="font-family:var(--font-display);font-size:22px;font-weight:700;color:${col};margin-left:auto">${total}</span>
+      </div>
+      <div style="display:flex;gap:14px;font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-bottom:6px">
+        ${m.vr?`<span>VR <strong style="color:var(--text2)">${m.vr}</strong></span>`:''}
+        ${m.dm?`<span>DM <strong style="color:var(--text2)">${m.dm}</strong></span>`:''}
+        ${m.qr?`<span>QR <strong style="color:var(--text2)">${m.qr}</strong></span>`:''}
+      </div>
+      ${m.fixes?`<div style="font-size:12px;margin-bottom:3px"><span style="color:var(--red)">Fix: </span><span style="color:var(--text2)">${m.fixes}</span></div>`:''}
+      ${m.well?`<div style="font-size:12px"><span style="color:var(--gold)">Well: </span><span style="color:var(--text2)">${m.well}</span></div>`:''}
+      <button class="del-btn" style="margin-top:5px" onclick="delMock(${mocks.length-1-i})">x Delete</button>
+    </div>`;
+  }).join('');
+}
+function delMock(i){const logs=DB.get('ucat_mocks');logs.splice(i,1);DB.set('ucat_mocks',logs);renderUcatMocksHistory();toast('Deleted')}
+function saveDrill(){
+  const dt=document.getElementById('drill-date').value,sec=document.getElementById('drill-section').value;
+  const qs=document.getElementById('drill-qs').value;
+  if(!dt||!qs){toast('Enter date and question count');return}
+  const entry={date:dt,section:sec,score:document.getElementById('drill-score').value,questions:qs,duration:document.getElementById('drill-time').value,notes:document.getElementById('drill-notes').value,created:Date.now()};
+  const logs=DB.get('ucat_drills');logs.push(entry);DB.set('ucat_drills',logs);
+  toast('Drill saved');['drill-score','drill-qs','drill-time','drill-notes'].forEach(id=>document.getElementById(id).value='');
+  addXP(40,'Drill logged');renderUcatDrillsHistory();
+}
+function renderUcatDrillsHistory(){
+  const drills=DB.get('ucat_drills').slice().reverse();const el=document.getElementById('ucat-drills-history');
+  if(!drills.length){el.innerHTML='<div class="empty">No drills yet.</div>';return}
+  const secCol={VR:'var(--blue2)',DM:'var(--gold)',QR:'var(--green)',Mixed:'var(--amber)'};
+  el.innerHTML='<table class="log-table"><thead><tr><th>Date</th><th>Section</th><th>Qs</th><th>% Correct</th><th>Time</th><th>Notes</th><th></th></tr></thead><tbody>'+
+    drills.map((d,i)=>`<tr><td style="font-family:var(--font-mono)">${fmtDate(d.date)}</td><td style="color:${secCol[d.section]||'var(--text2)'};font-weight:700;font-family:var(--font-mono)">${d.section}</td><td style="font-weight:700;color:var(--text)">${d.questions}</td><td style="color:var(--text)">${d.score?d.score+'%':'-'}</td><td>${d.duration?d.duration+' min':'-'}</td><td style="max-width:180px;color:var(--text2)">${d.notes||'-'}</td><td><button class="del-btn" onclick="delDrill(${drills.length-1-i})">x</button></td></tr>`).join('')+
+    '</tbody></table>';
+}
+function delDrill(i){const logs=DB.get('ucat_drills');logs.splice(i,1);DB.set('ucat_drills',logs);renderUcatDrillsHistory();toast('Deleted')}
+// 9-WEEK PLAN
+const UCAT_PLAN=[
+  {wk:1,theme:'FORMAT & BASELINE',target:1900,note:'Starting from scratch with 41 days to go. This week is entirely about learning the format — what every question type looks like, how the clock feels, where you lose time. No mock until Friday. Every wrong answer reviewed in full.',days:[
+    {day:'Tue',label:'Day 1 — Format intro',morning:[{t:'Set up Medify — find all 3 question banks (VR, DM, QR)',m:20},{t:'80 VR — untimed, read every explanation whether right or wrong',m:80},{t:'60 DM — untimed, name every question type you encounter',m:65}],evening:[{t:'Review every wrong answer from this morning — understand why',m:20},{t:'60 QR — untimed, write out method for each type',m:60},{t:'50 DM — untimed, focus on the types that felt hardest',m:55}]},
+    {day:'Wed',label:'Day 2 — First timed attempt',morning:[{t:'100 VR — timed for first time, 30 sec/question, do not panic at the clock',m:50},{t:'60 DM — timed, 64 sec/question, just get used to pressure',m:65},{t:'60 QR — timed, 43 sec/question',m:43}],evening:[{t:'Review all wrong answers (15 min — be thorough)',m:15},{t:'80 VR — keyword scan technique, never reread a passage',m:40},{t:'60 DM — the types you got wrong this morning',m:65}]},
+    {day:'Thu',label:'Day 3 — Question type deep dive',morning:[{t:'100 DM — untimed, syllogisms x50 then Venn diagrams x50',m:107},{t:'100 VR — timed minimum',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'100 QR — ratios, percentages, currency, unit conversion',m:72},{t:'60 DM — timed, types from this morning',m:65}]},
+    {day:'Fri',label:'Day 4 — VR method',morning:[{t:'200 VR — timed, 25 sec/q strict, keyword scan only, never reread',m:83},{t:'80 QR — tables and charts',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 VR — inference questions only (hardest type)',m:60},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Sat',label:'Day 5 — QR mastery start',morning:[{t:'150 QR — ratios x50, percentages x50, graph reading x50 — all timed',m:108},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 QR — data interpretation mixed',m:87},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Sun',label:'Day 6 — DM patterns',morning:[{t:'150 DM — statistical reasoning x75, argument analysis x75',m:160},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'100 DM — Venn diagrams + probability',m:107},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Mon',label:'Day 7 — First full mock',morning:[{t:'Full Medify mock — timed, exam conditions, no pausing, phone away',m:111},{t:'Log VR/DM/QR scores in tracker immediately',m:5},{t:'100 VR timed after',m:50}],evening:[{t:'Full mock review — every wrong answer, understand each one (45 min)',m:45},{t:'Write your 3 biggest weaknesses',m:10},{t:'Write what improved vs Day 1',m:10}]},
+  ]},
+  {wk:2,theme:'QR MASTERY + VR SPEED',target:2000,note:'QR is the fastest section to improve — fixed methods, huge gains. VR is time management only. This week you should gain +100 pts from QR alone if you execute. 5-6 hrs daily, no excuses.',days:[
+    {day:'Tue',label:'QR — all types',morning:[{t:'150 QR — ratios x50, percentages x50, currency/unit conversion x50',m:108},{t:'Write method for every type you encountered',m:15},{t:'100 VR — timed minimum',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 QR — tables x75, graph reading x75',m:108},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Wed',label:'QR calculator discipline',morning:[{t:'QR full section x3 — 36q, 26 min each. Count calc uses each round.',m:80},{t:'Target: use calculator 30% less each round',m:5},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 QR — mental math focus, calc only when essential',m:87},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Thu',label:'VR speed drills',morning:[{t:'250 VR — 25 sec/q strict, keyword scan only, never reread a passage',m:104},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 VR — inference questions only',m:63},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Fri',label:'DM deep dive',morning:[{t:'200 DM — syllogisms x100, logic puzzles x100',m:213},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 DM — Venn diagrams + probability + statistical reasoning',m:128},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions, no pausing',m:111},{t:'Log scores immediately',m:5},{t:'100 VR timed after',m:50}],evening:[{t:'Full mock review — every wrong answer (45 min)',m:45},{t:'Compare to week 1 mock — VR, DM, QR each',m:10},{t:'Identify your single weakest section going into week 3',m:10}]},
+    {day:'Sun',label:'Mock review + weak section',morning:[{t:'Re-do every wrong answer from Saturday mock',m:60},{t:'200q — weakest section, varied types',m:130}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — same section, different question types',m:100},{t:'80 VR — minimum daily',m:40}]},
+    {day:'Mon',label:'VR full sections',morning:[{t:'VR full section x4 — 44q, 22 min each, target finishing with time left',m:93},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'VR full section x2',m:47},{t:'100 DM — mixed timed',m:107}]},
+  ]},
+  {wk:3,theme:'FULL MOCKS + SURGICAL ATTACK',target:2100,note:'Mocks every 2 days from now. Review is more important than volume — 1 hour of proper review beats 3 hours of new questions. Attack your weakest section daily alongside mock work.',days:[
+    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min, every wrong answer',m:60},{t:'For each wrong: time problem or knowledge problem?',m:15}]},
+    {day:'Wed',label:'Weak section attack',morning:[{t:'200q — weakest section, most-missed question type',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'200q — weakest section, second question type',m:130}]},
+    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Compare to Tuesday — are you improving?',m:10},{t:'150q — lowest section from this mock',m:100}]},
+    {day:'Fri',label:'Weak section day 2',morning:[{t:'200q — weakest section, all question types mixed',m:130},{t:'150 VR — minimum daily',m:63}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 DM — timed, the types you get wrong most',m:160},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Write your section strategy — what do you do in minute 1 of each section',m:20}]},
+    {day:'Sun',label:'Targeted drills',morning:[{t:'150q — weakest VR question type',m:63},{t:'150q — weakest DM question type',m:160}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 QR — mixed timed',m:108},{t:'80 VR — minimum daily',m:40}]},
+    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Update section strategy — what changed?',m:15}]},
+  ]},
+  {wk:4,theme:'TIMED PRESSURE',target:2200,note:'No comfortable practice from this point. Everything against the clock. Timed discomfort in practice is exam confidence on the day. Volume stays high — 5-6 hrs daily.',days:[
+    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Count calculator uses in QR — target reduce by 30% next mock',m:10}]},
+    {day:'Wed',label:'VR + DM timed back to back',morning:[{t:'VR full section x2 then DM full section x2 — no break between any',m:120},{t:'Note where concentration drops — this is what you are training',m:5},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 VR — inference only',m:63},{t:'100 DM — weakest type',m:107}]},
+    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'150q — weakest section from this mock',m:100}]},
+    {day:'Fri',label:'QR pressure',morning:[{t:'QR full section x4 back to back — 36q, 26 min each, log accuracy each round',m:105},{t:'200 VR — minimum daily',m:83}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 DM — timed, weakest types',m:160},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Rewrite full section strategy based on 4 weeks of data',m:20}]},
+    {day:'Sun',label:'Weak section surgical',morning:[{t:'250q — weakest section only, all question types',m:160},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — second weakest section',m:100},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Are you at 2200? If not — what is the single thing dragging you down?',m:10}]},
+  ]},
+  {wk:5,theme:'EXAM SIMULATION',target:2270,note:'Simulate the exact exam experience every day this week — same time as your booking, same environment, no exceptions. Your brain needs to be conditioned to perform at that specific time of day.',days:[
+    {day:'Tue',label:'Simulated exam 1',morning:[{t:'Full mock at the exact time your exam is booked — treat it as completely real',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Write section strategy refinements',m:15}]},
+    {day:'Wed',label:'Weak section final attack',morning:[{t:'Re-do all wrong answers from Tuesday mock',m:60},{t:'200q — weakest section, surgical',m:130}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — second weakest section',m:100},{t:'80 VR — minimum daily',m:40}]},
+    {day:'Thu',label:'Simulated exam 2',morning:[{t:'Full mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Compare vs Tuesday — holding the score?',m:10}]},
+    {day:'Fri',label:'QR + DM sharp',morning:[{t:'QR full section x3 — calculator discipline',m:80},{t:'DM full section x3 — no pausing',m:120}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 VR — inference questions',m:63},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Simulated exam 3',morning:[{t:'Full mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Final strategy notes — write exactly what you do in the first 60 sec of each section',m:20}]},
+    {day:'Sun',label:'VR full sections',morning:[{t:'VR full section x4 — target finishing each with 2 min spare',m:93},{t:'100 DM — mixed timed',m:107}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 QR — minimum daily',m:87},{t:'Read strategy notes',m:15}]},
+    {day:'Mon',label:'Simulated exam 4',morning:[{t:'Full mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 45 min',m:45},{t:'You have 1 week left. Read strategy notes. Trust your prep.',m:10}]},
+  ]},
+    {wk:6,theme:'FINAL WEEK',target:2310,note:'Exam Mon 3 Aug. Tue-Sat full study, Sun taper, Sat taper, Mon exam. Score is built in weeks 1-5 — this week is refinement and confidence.',days:[
+    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Final weak section notes',m:15}]},
+    {day:'Wed',label:'Weak section + drills',morning:[{t:'200q — weakest section, surgical',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — second weakest section',m:100},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Write final strategy notes — exactly what you do in first 60 sec of each section',m:20}]},
+    {day:'Fri',label:'VR + DM sharpener',morning:[{t:'VR full section x3 — timed, finish with time to spare',m:70},{t:'DM full section x2 — no pausing',m:75}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'100 QR — calculator discipline',m:72},{t:'Read strategy notes',m:15}]},
+    {day:'Sat',label:'Light taper — 2 days out',morning:[{t:'80 VR — easy pace, staying sharp',m:33},{t:'60 DM — easy pace',m:64},{t:'60 QR — easy pace',m:43}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Read strategy notes one final time — no new material',m:20},{t:'Prep exam bag — ID, booking confirmation, water, snack',m:10}]},
+    {day:'Sun',label:'Rest — 1 day out',morning:[{t:'Nothing UCAT-related at all',m:0},{t:'Light activity, good food, stay calm',m:0}],evening:[{t:'Confirm test centre location and travel time',m:10},{t:'Good dinner, no alcohol, screen off by 9pm, sleep by 10pm',m:0}]},
+    {day:'Mon',label:'⚔ EXAM DAY — Mon 3 Aug',morning:[{t:'Light breakfast — nothing heavy',m:0},{t:'Arrive at Pearson VUE 30 min early',m:0},{t:'VR: keyword scan, 30 sec max/question, skip + flag if unsure',m:0},{t:'DM: identify question type in first 5 seconds, apply the pattern',m:0},{t:'QR: calculator only when you genuinely need it',m:0}],evening:[{t:"You're done. Go eat something good. UCAT is over.",m:0}]},
+  ]},];
+function renderUcatPlan(){
+  const el=document.getElementById('ucat-plan-body');if(!el)return;
+  const planStart=new Date('2026-06-23'),now=new Date(),currentWk=Math.min(9,Math.max(1,Math.ceil((now-planStart)/(7*86400000))));
+  el.innerHTML=UCAT_PLAN.map(week=>{
+    const isCurrent=week.wk===currentWk;
+    let html=`<div class="week-acc"><div class="week-acc-header ${isCurrent?'current':''}" onclick="toggleWeek(${week.wk})">`;
+    html+=`<div style="display:flex;align-items:center;gap:10px;flex:1"><span style="font-family:var(--font-mono);font-size:11px;font-weight:700;color:${isCurrent?'var(--gold)':'var(--text3)'}">WEEK ${week.wk}</span>`;
+    html+=`<span style="font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--text);flex:1">${week.theme}</span>`;
+    html+=`<span style="font-family:var(--font-mono);font-size:12px;color:var(--gold);font-weight:700">to ${week.target}</span>`;
+    if(isCurrent) html+=`<span class="badge gold">NOW</span>`;
+    html+=`</div><span id="wkarr-${week.wk}" style="color:var(--text3);font-size:12px;margin-left:8px">${isCurrent?'v':'>'}</span></div>`;
+    html+=`<div class="week-acc-body ${isCurrent?'open':''}" id="wkbody-${week.wk}">`;
+    html+=`<div style="font-size:12px;color:var(--text3);padding:10px 1.1rem;border-bottom:1px solid var(--border);line-height:1.6;font-style:italic">${week.note}</div>`;
+    week.days.forEach(day=>{
+      const totalMin=[...day.morning,...day.evening].reduce((a,t)=>a+(t.m||0),0);
+      html+=`<div class="day-block"><div class="day-header"><span class="dy">${day.day}</span><span class="dl">${day.label}</span><span class="dt">${totalMin>0?'~'+Math.round(totalMin/60)+'h '+String(totalMin%60).padStart(2,'0')+'m':''}</span></div>`;
+      html+=`<div class="session-block"><div class="session-label" style="color:var(--amber)">Morning</div>`;
+      day.morning.forEach(t=>{if(t.t)html+=`<div class="plan-task"><span style="flex:1">${t.t}</span><span class="pt-min">${t.m>0?t.m+' min':''}</span></div>`});
+      html+=`</div><div class="session-block"><div class="session-label" style="color:var(--blue2)">Evening</div>`;
+      day.evening.forEach(t=>{if(t.t)html+=`<div class="plan-task"><span style="flex:1">${t.t}</span><span class="pt-min">${t.m>0?t.m+' min':''}</span></div>`});
+      html+=`</div></div>`;
+    });
+    html+=`</div></div>`;
+    return html;
+  }).join('');
+}
+function toggleWeek(wk){
+  const body=document.getElementById('wkbody-'+wk),arr=document.getElementById('wkarr-'+wk);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);arr.textContent=open?'>':'v';
+}
+// HISTORY
+function filterHistory(f,btn){
+  document.querySelectorAll('#section-history .inner-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderAllHistory(f);
+}
+function renderAllHistory(filter){
+  const weights=DB.get('weights').map(w=>({...w,_cat:'weight'}));
+  const mocks=DB.get('ucat_mocks').map(m=>({...m,_cat:'ucat'}));
+  const drills=DB.get('ucat_drills').map(d=>({...d,_cat:'ucat'}));
+  const skin=DB.get('skin_log').map(s=>({...s,_cat:'skin'}));
+  let all=[...weights,...mocks,...drills,...skin];
+  all.sort((a,b)=>(b.date||'').localeCompare(a.date||'')||(b.created||0)-(a.created||0));
+  if(filter!=='all') all=all.filter(e=>e._cat===filter);
+  const el=document.getElementById('history-all');
+  if(!all.length){el.innerHTML='<div class="empty">Nothing here yet.</div>';return}
+  const catLabel={lift:'LIFT',cardio:'CARDIO',badminton:'BADMINTON',weight:'WEIGHT',ucat:'UCAT',skin:'SKINCARE'};
+  const catCol={lift:'blue',cardio:'green',badminton:'purple',weight:'gold',ucat:'blue',skin:'cyan'};
+  el.innerHTML=all.map(e=>{
+    let html=`<div style="padding:11px 0;border-bottom:1px solid var(--border)"><div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;flex-wrap:wrap"><span class="badge ${catCol[e._cat]||'blue'}">${catLabel[e._cat]||e._cat.toUpperCase()}</span><span style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${fmtDate(e.date)}</span>`;
+    if(e.duration) html+=`<span style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${e.duration} min</span>`;
+    if(e.total) html+=`<span style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--gold);margin-left:auto">${e.total}</span>`;
+    if(e.w) html+=`<span style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--gold);margin-left:auto">${parseFloat(e.w).toFixed(1)} kg</span>`;
+    html+=`</div>`;
+    if(e._cat==='lift'&&e.exercises){const filled=e.exercises.filter(x=>x.set1&&(x.set1.reps||x.set1.weight));if(filled.length)html+=`<div style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${filled.map(x=>x.name+(x.set1.reps?' '+x.set1.reps+'/'+x.set2.reps+'reps':'')+(x.set1.weight?' @'+x.set1.weight+'kg':'')).join(' · ')}</div>`}
+    if(e._cat==='ucat'&&e.vr) html+=`<div style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">VR ${e.vr} · DM ${e.dm} · QR ${e.qr}</div>`;
+    if(e._cat==='skin') html+=`<div style="font-size:11px;color:var(--text3);font-family:var(--font-mono)">${e.ada?'Ada: '+e.ada:''}${e.lrp?' · LRP: '+e.lrp:''}</div>`;
+    if(e.notes&&e._cat!=='skin') html+=`<div style="font-size:12px;color:var(--text2);margin-top:3px;font-style:italic">"${e.notes}"</div>`;
+    html+=`</div>`;
+    return html;
+  }).join('');
+}
+// PROG TABS
+function progTab(id,btn){
+  document.querySelectorAll('#section-programme .inner-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#section-programme .inner-tab-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');document.getElementById('prog-'+id).classList.add('active');
+}
+// INIT
+// ── CLOUD SYNC (JSONBin) ──────────────────────────────────────────────────────
+const JSONBIN_KEY = '$2a$10$90c3KprPXfxjLXCIWJSVJulaYzshKw48t8u9v3W4mIUSGV1QqtY6C';
+const JSONBIN_URL = 'https://api.jsonbin.io/v3/b';
+let JSONBIN_BIN_ID = '6a26872ff5f4af5e29ca2b63'; // hardcoded shared bin
+localStorage.setItem('sqx_bin_id', JSONBIN_BIN_ID);
+let syncTimeout = null;
+let lastSyncedData = null;
+
+async function cloudSave() {
+  try {
+    const data = {};
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k.startsWith('sqx_')) data[k] = localStorage.getItem(k);
+    }
+    const payload = JSON.stringify(data);
+    if(payload === lastSyncedData) return; // nothing changed
+    await fetch(JSONBIN_URL+'/'+JSONBIN_BIN_ID, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':JSONBIN_KEY},
+      body: payload
+    });
+    lastSyncedData = payload;
+    showSyncStatus('✓ saved');
+  } catch(e) {
+    showSyncStatus('sync error');
+  }
+}
+
+async function cloudLoad() {
+  if(!JSONBIN_BIN_ID) return false;
+  try {
+    showSyncStatus('loading...');
+    const res = await fetch(JSONBIN_URL+'/'+JSONBIN_BIN_ID+'/latest', {
+      headers:{'X-Master-Key':JSONBIN_KEY}
+    });
+    const json = await res.json();
+    const data = json.record;
+    if(!data) return false;
+    Object.entries(data).forEach(([k,v])=>{ if(k.startsWith('sqx_')) localStorage.setItem(k,v); });
+    lastSyncedData = JSON.stringify(data);
+    showSyncStatus('✓ loaded');
+    return true;
+  } catch(e) {
+    showSyncStatus('');
+    return false;
+  }
+}
+
+function scheduleSave(){
+  clearTimeout(syncTimeout);
+  syncTimeout = setTimeout(cloudSave, 1500);
+}
+
+function showSyncStatus(msg){
+  let el = document.getElementById('sync-status');
+  if(!el) return;
+  el.textContent = msg;
+  if(msg.startsWith('✓')) setTimeout(()=>{ if(el.textContent===msg) el.textContent=''; }, 3000);
+}
+
+// Patch DB.set to trigger cloud save
+const _origSet = DB.set.bind(DB);
+DB.set = function(k,v){ _origSet(k,v); scheduleSave(); };
+const _origSetObj = DB.setObj.bind(DB);
+DB.setObj = function(k,v){ _origSetObj(k,v); scheduleSave(); };
+
+
+function init(){
+  const d=new Date(),h=d.getHours();
+  const el=document.getElementById('today-greeting');if(el)el.textContent=h<12?'ARISE, HUNTER':h<17?'STAY FOCUSED, HUNTER':'EVENING GRIND, HUNTER';
+  const dl=document.getElementById('today-date-label');
+  if(dl){const dn=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];const mn=['January','February','March','April','May','June','July','August','September','October','November','December'];dl.textContent=dn[d.getDay()]+' · '+d.getDate()+' '+mn[d.getMonth()]+' '+d.getFullYear();}
+  // Load from cloud first, then render
+  cloudLoad().then(loaded => {
+    renderToday();renderCalendar();updateSidebar();
+  });
+}
+init();
+
+</script>
+</body>
+</html>
