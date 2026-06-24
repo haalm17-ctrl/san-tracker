@@ -165,7 +165,7 @@ select option{background:var(--bg3)}
   <div style="display:flex;gap:1rem;align-items:flex-start">
     <!-- LEFT: Calendar (sticky) -->
     <div style="width:260px;flex-shrink:0;position:sticky;top:1rem">
-      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-family:var(--font-mono);margin-bottom:.5rem">Jun 6 → Aug 23 · tap any day</div>
+      <div style="font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);font-family:var(--font-mono);margin-bottom:.5rem">Jun 23 → Aug 23 · tap any day</div>
       <div class="card" style="padding:.625rem"><div id="cal-grid"></div></div>
     </div>
     <!-- RIGHT: Tasks (scrollable) -->
@@ -295,7 +295,7 @@ select option{background:var(--bg3)}
 </div>
 <!-- UCAT PLAN -->
 <div id="section-ucat-plan" class="section">
-  <div class="page-header"><div class="page-title">9-WEEK PLAN</div><div class="page-sub">Jun 6 → Aug 3 · 4 hrs daily · 1800 → 2310 · Click any day in Tasks tab to see that day's tasks</div></div>
+  <div class="page-header"><div class="page-title">9-WEEK PLAN</div><div class="page-sub">Jun 23 → Aug 3 · 5-6 hrs daily · 1800 → 2310 · Click any day in Tasks tab to see that day's tasks</div></div>
   <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--r);padding:9px 13px;margin-bottom:.875rem;font-size:12px;color:var(--text2);line-height:1.7;font-family:var(--font-mono)"><strong style="color:var(--gold)">Daily floor:</strong> 100 VR + 80 DM + 80 QR across both sessions · Review wrong answers (10 min) first every evening · Mock days: mock IS the morning session</div>
   <div id="ucat-plan-body"></div>
 </div>
@@ -417,7 +417,7 @@ select option{background:var(--bg3)}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 // CONSTANTS
-const PROG_START=new Date('2026-06-06'),PROG_END=new Date('2026-08-23'),UCAT_EXAM=new Date('2026-08-03');
+const PROG_START=new Date('2026-06-23'),PROG_END=new Date('2026-08-23'),UCAT_EXAM=new Date('2026-08-03');
 const START_W=74,GOAL_W=68,UCAT_BASE=1800,UCAT_TARGET=2310;
 const LEVEL_THRESHOLDS=[0,500,1200,2200,3500,5200,7200,9800,13000,17000,22000];
 const LEVEL_TITLES=['Novice','Initiate','Apprentice','Practitioner','Scholar','Expert','Elite','Master','Grandmaster','Transcendent','Legendary'];
@@ -484,7 +484,7 @@ function nav(id){
 // QUEST SYSTEM
 function getQuestsForDate(dateStr){
   const d=new Date(dateStr+'T12:00:00'),dow=d.getDay();
-  const dayIdx=daysBetween('2026-06-06',dateStr);
+  const dayIdx=daysBetween('2026-06-23',dateStr);
   const weekNum=Math.max(1,Math.min(9,Math.ceil((dayIdx+1)/7)));
   const skin=skinSched(dateStr);
   // PPL x2 split starting Jun 6
@@ -500,8 +500,8 @@ function getQuestsForDate(dateStr){
   const wkLabels={push:'Push',pull:'Pull',legs:'Legs'};
   const quests=[];
 
-  // Everything before Jun 6 is disregarded — programme starts Jun 6
-  if(dateStr < '2026-06-06'){
+  // Everything before Jun 23 is disregarded — UCAT plan starts Jun 23
+  if(dateStr < '2026-06-23'){
     return [];
   }
 
@@ -560,7 +560,7 @@ function getQuestsForDate(dateStr){
 }
 function getPlanDay(dateStr){
   // Returns the UCAT_PLAN week+day object for a given date, or null
-  const planStart = new Date('2026-06-06');
+  const planStart = new Date('2026-06-23');
   const d = new Date(dateStr+'T12:00:00');
   if(d < planStart) return null;
   const dayIdx = Math.floor((d - planStart) / 86400000);
@@ -1002,15 +1002,12 @@ function renderPlanForDay(dateStr){
 
 // UCAT
 const UCAT_WEEKS=[
-  {wk:1,ends:'2026-06-12',target:1900,focus:'Format cold — learn every question type'},
-  {wk:2,ends:'2026-06-19',target:2000,focus:'QR method mastery — biggest jump'},
-  {wk:3,ends:'2026-06-26',target:2080,focus:'VR speed drills, DM pattern exposure'},
-  {wk:4,ends:'2026-07-03',target:2150,focus:'Full mocks, review every wrong answer'},
-  {wk:5,ends:'2026-07-10',target:2200,focus:'Surgical weak section attack'},
-  {wk:6,ends:'2026-07-17',target:2240,focus:'Everything timed from now'},
-  {wk:7,ends:'2026-07-24',target:2270,focus:'Consolidation — full mocks only'},
-  {wk:8,ends:'2026-07-31',target:2300,focus:'Exam simulation'},
-  {wk:9,ends:'2026-08-07',target:2310,focus:'Taper — exam Mon 3 Aug · keep sharp, no new material'},
+  {wk:1,ends:'2026-06-29',target:1900,focus:'Format mastery — every question type, first mock Friday'},
+  {wk:2,ends:'2026-07-06',target:2000,focus:'QR mastery + VR speed — biggest gains week'},
+  {wk:3,ends:'2026-07-13',target:2100,focus:'Full mocks every 2 days + surgical weak section'},
+  {wk:4,ends:'2026-07-20',target:2200,focus:'Timed pressure — everything against the clock'},
+  {wk:5,ends:'2026-07-27',target:2270,focus:'Exam simulation — same time as booking daily'},
+  {wk:6,ends:'2026-08-03',target:2310,focus:'Taper — light Tue/Wed, rest Thu/Fri/Sat/Sun, exam Mon'},
 ];
 function initUcatDates(){
   const daysLeft=Math.max(0,Math.ceil((UCAT_EXAM-new Date())/86400000));
@@ -1062,7 +1059,7 @@ function renderUcatMilestones(){
 function renderUcatChart(){
   destroyChart('ucat-chart');const canvas=document.getElementById('ucat-chart');if(!canvas)return;
   const mocks=DB.get('ucat_mocks').filter(m=>m.vr&&m.dm&&m.qr).sort((a,b)=>a.date.localeCompare(b.date));
-  const projLabels=['2026-06-06',...UCAT_WEEKS.map(w=>w.ends)];
+  const projLabels=['2026-06-23',...UCAT_WEEKS.map(w=>w.ends)];
   const projData=[UCAT_BASE,...UCAT_WEEKS.map(w=>w.target)];
   const allLabels=[...new Set([...projLabels,...mocks.map(m=>m.date)])].sort();
   charts['ucat-chart']=new Chart(canvas,{type:'line',data:{labels:allLabels.map(fmtDate),datasets:[
@@ -1126,91 +1123,63 @@ function renderUcatDrillsHistory(){
 function delDrill(i){const logs=DB.get('ucat_drills');logs.splice(i,1);DB.set('ucat_drills',logs);renderUcatDrillsHistory();toast('Deleted')}
 // 9-WEEK PLAN
 const UCAT_PLAN=[
-  {wk:1,theme:'FORMAT & BASELINE',target:1900,note:'You are starting from scratch. This week is entirely about understanding the test. Do not worry about speed or scores yet — learn what each question type looks like and how the format works. Every question you review teaches you something.',days:[
-    {day:'Sat',label:'Day 1 — Format intro',morning:[{t:'Set up Medify — explore the platform, find all question banks',m:30},{t:'Read the official UCAT ANZ format guide (3 sections: VR, DM, QR)',m:30},{t:'50 VR — untimed, read every explanation whether right or wrong',m:60}],evening:[{t:'Review every wrong answer from this morning — understand why',m:20},{t:'50 DM — untimed, identify and name each question type you see',m:60},{t:'Write down every DM question type you encountered',m:10}]},
-    {day:'Sun',label:'Day 2 — QR intro',morning:[{t:'50 QR — untimed, write out your method for each question type',m:60},{t:'50 VR — untimed, focus on understanding passage structure',m:60}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'50 DM — untimed, focus on the types you found hardest yesterday',m:60},{t:'Write a one-line strategy for each DM type you now understand',m:15}]},
-    {day:'Mon',label:'Day 3 — First timed attempt',morning:[{t:'100 VR — timed for the first time (30 sec/question), do not panic',m:50},{t:'60 DM — timed (64 sec/question), just get used to the clock',m:65}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'80 QR — untimed, method focus, use calculator freely',m:70},{t:'Note: which section felt most foreign?',m:10}]},
-    {day:'Tue',label:'Day 4 — VR method',morning:[{t:'100 VR — timed, try keyword scanning (do not reread passages)',m:50},{t:'60 QR — timed, note where you run out of time',m:45}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'80 DM — timed, mixed types',m:85},{t:'60 VR — inference questions only (hardest type)',m:30}]},
-    {day:'Wed',label:'Day 5 — DM deep dive',morning:[{t:'100 DM — untimed, syllogisms x50 then Venn diagrams x50',m:110},{t:'80 VR — timed minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'80 QR — ratios, percentages, unit conversion',m:65},{t:'60 DM — timed, the types from this morning',m:65}]},
-    {day:'Thu',label:'Day 6 — QR method',morning:[{t:'100 QR — untimed, tables and charts x50, graph reading x50',m:90},{t:'80 VR — timed minimum',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'80 QR — timed (43 sec/q), mixed types',m:58},{t:'60 DM — minimum daily',m:65}]},
-    {day:'Fri',label:'Day 7 — First mini mock',morning:[{t:'Medify mini mock — timed, exam conditions, no pausing',m:60},{t:'Log VR/DM/QR scores in tracker immediately',m:5},{t:'100 VR timed minimum',m:50}],evening:[{t:'Full mini mock review — every wrong answer, understand each one',m:30},{t:'Write your 3 biggest weaknesses from the mock',m:10},{t:'Write week 1 reflection — what have you learned, what scares you most',m:15}]},
+  {wk:1,theme:'FORMAT & BASELINE',target:1900,note:'Starting from scratch with 41 days to go. This week is entirely about learning the format — what every question type looks like, how the clock feels, where you lose time. No mock until Friday. Every wrong answer reviewed in full.',days:[
+    {day:'Tue',label:'Day 1 — Format intro',morning:[{t:'Set up Medify — find all 3 question banks (VR, DM, QR)',m:20},{t:'80 VR — untimed, read every explanation whether right or wrong',m:80},{t:'60 DM — untimed, name every question type you encounter',m:65}],evening:[{t:'Review every wrong answer from this morning — understand why',m:20},{t:'60 QR — untimed, write out method for each type',m:60},{t:'50 DM — untimed, focus on the types that felt hardest',m:55}]},
+    {day:'Wed',label:'Day 2 — First timed attempt',morning:[{t:'100 VR — timed for first time, 30 sec/question, do not panic at the clock',m:50},{t:'60 DM — timed, 64 sec/question, just get used to pressure',m:65},{t:'60 QR — timed, 43 sec/question',m:43}],evening:[{t:'Review all wrong answers (15 min — be thorough)',m:15},{t:'80 VR — keyword scan technique, never reread a passage',m:40},{t:'60 DM — the types you got wrong this morning',m:65}]},
+    {day:'Thu',label:'Day 3 — Question type deep dive',morning:[{t:'100 DM — untimed, syllogisms x50 then Venn diagrams x50',m:107},{t:'100 VR — timed minimum',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'100 QR — ratios, percentages, currency, unit conversion',m:72},{t:'60 DM — timed, types from this morning',m:65}]},
+    {day:'Fri',label:'Day 4 — VR method',morning:[{t:'200 VR — timed, 25 sec/q strict, keyword scan only, never reread',m:83},{t:'80 QR — tables and charts',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 VR — inference questions only (hardest type)',m:60},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Sat',label:'Day 5 — QR mastery start',morning:[{t:'150 QR — ratios x50, percentages x50, graph reading x50 — all timed',m:108},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 QR — data interpretation mixed',m:87},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Sun',label:'Day 6 — DM patterns',morning:[{t:'150 DM — statistical reasoning x75, argument analysis x75',m:160},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'100 DM — Venn diagrams + probability',m:107},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Mon',label:'Day 7 — First full mock',morning:[{t:'Full Medify mock — timed, exam conditions, no pausing, phone away',m:111},{t:'Log VR/DM/QR scores in tracker immediately',m:5},{t:'100 VR timed after',m:50}],evening:[{t:'Full mock review — every wrong answer, understand each one (45 min)',m:45},{t:'Write your 3 biggest weaknesses',m:10},{t:'Write what improved vs Day 1',m:10}]},
   ]},
-  {wk:2,theme:'QR MASTERY',target:2000,note:'QR is the fastest section to improve because it is method-based not knowledge-based. Learn the fixed method for every question type and your score jumps immediately. Aim for +100 pts this week from QR alone.',days:[
-    {day:'Sat',label:'QR — ratios and percentages',morning:[{t:'150 QR — ratios x50, percentages x50, currency x50 — all timed',m:108},{t:'Write out the exact method for each type after',m:15}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'120 QR — repeat the same types, aim to halve errors',m:87},{t:'80 DM — minimum daily, varied',m:85}]},
-    {day:'Sun',label:'QR — tables and graphs',morning:[{t:'150 QR — tables x75, graph reading x75 — timed',m:108},{t:'100 VR — minimum daily timed',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'120 QR — data interpretation mixed, timed',m:87},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Mon',label:'QR — calculator discipline',morning:[{t:'100 QR — timed, count every time you reach for the calculator',m:72},{t:'100 QR again — aim to use calculator 30% less than first round',m:72},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'80 QR — mental math focus, calculator only when essential',m:58},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Tue',label:'VR speed',morning:[{t:'200 VR — timed (25 sec/q), keyword scan ONLY, never reread',m:83},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'120 VR — inference questions only (hardest type)',m:60},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Wed',label:'DM — logic and syllogisms',morning:[{t:'150 DM — syllogisms x75, logical puzzles x75',m:160},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'100 DM — Venn diagrams + probability',m:107},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Thu',label:'QR full section x3',morning:[{t:'QR full section — 36q, 26 min. Repeat 3 times back to back.',m:80},{t:'Compare accuracy across 3 rounds — are you improving?',m:5}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'100 DM — argument analysis',m:107},{t:'80 VR — minimum daily',m:40}]},
-    {day:'Fri',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions, no pausing, phone away',m:111},{t:'Log VR/DM/QR scores immediately',m:5},{t:'100 VR timed after',m:50}],evening:[{t:'Full mock review — every wrong answer (30 min, be thorough)',m:30},{t:'Compare to week 1 — what improved?',m:10},{t:'Identify your single weakest section going into week 3',m:10}]},
+  {wk:2,theme:'QR MASTERY + VR SPEED',target:2000,note:'QR is the fastest section to improve — fixed methods, huge gains. VR is time management only. This week you should gain +100 pts from QR alone if you execute. 5-6 hrs daily, no excuses.',days:[
+    {day:'Tue',label:'QR — all types',morning:[{t:'150 QR — ratios x50, percentages x50, currency/unit conversion x50',m:108},{t:'Write method for every type you encountered',m:15},{t:'100 VR — timed minimum',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 QR — tables x75, graph reading x75',m:108},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Wed',label:'QR calculator discipline',morning:[{t:'QR full section x3 — 36q, 26 min each. Count calc uses each round.',m:80},{t:'Target: use calculator 30% less each round',m:5},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 QR — mental math focus, calc only when essential',m:87},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Thu',label:'VR speed drills',morning:[{t:'250 VR — 25 sec/q strict, keyword scan only, never reread a passage',m:104},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 VR — inference questions only',m:63},{t:'80 DM — minimum daily',m:85}]},
+    {day:'Fri',label:'DM deep dive',morning:[{t:'200 DM — syllogisms x100, logic puzzles x100',m:213},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 DM — Venn diagrams + probability + statistical reasoning',m:128},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions, no pausing',m:111},{t:'Log scores immediately',m:5},{t:'100 VR timed after',m:50}],evening:[{t:'Full mock review — every wrong answer (45 min)',m:45},{t:'Compare to week 1 mock — VR, DM, QR each',m:10},{t:'Identify your single weakest section going into week 3',m:10}]},
+    {day:'Sun',label:'Mock review + weak section',morning:[{t:'Re-do every wrong answer from Saturday mock',m:60},{t:'200q — weakest section, varied types',m:130}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — same section, different question types',m:100},{t:'80 VR — minimum daily',m:40}]},
+    {day:'Mon',label:'VR full sections',morning:[{t:'VR full section x4 — 44q, 22 min each, target finishing with time left',m:93},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'VR full section x2',m:47},{t:'100 DM — mixed timed',m:107}]},
   ]},
-  {wk:3,theme:'VR SPEED + DM PATTERNS',target:2080,note:'VR is almost entirely a time management problem. If you finish the section you will score well. DM becomes automatic once you have seen enough of each type — this week is pattern repetition.',days:[
-    {day:'Sat',label:'VR — scanning drills',morning:[{t:'200 VR — 25 sec/q strict, keyword scan, never reread',m:83},{t:'100 VR — inference questions only',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 VR — true/false/cant tell, strict timing',m:63},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Sun',label:'DM — Venn and probability',morning:[{t:'150 DM — Venn diagrams x75, probability x75',m:160},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'100 DM — statistical reasoning',m:107},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Mon',label:'VR full sections',morning:[{t:'VR full section x3 — 44q, 22 min each, try to finish with time left',m:70},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'VR full section x2',m:47},{t:'100 DM — mixed',m:107}]},
-    {day:'Tue',label:'DM — statistical reasoning',morning:[{t:'150 DM — statistical reasoning x75, argument analysis x75',m:160},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'120 DM — mixed timed, track accuracy by question type',m:128},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Wed',label:'Mixed pressure',morning:[{t:'150 VR + 100 DM — back to back timed, no break between',m:105},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 VR — inference questions again',m:63},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Thu',label:'Weak section day',morning:[{t:'200q — your lowest scoring section from week 2 mock',m:130},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150q — same section, different question types',m:100},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Fri',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review (30 min)',m:30},{t:'Which VR passage type takes longest? Note it.',m:10},{t:'Which DM type has most errors? Note it.',m:10}]},
+  {wk:3,theme:'FULL MOCKS + SURGICAL ATTACK',target:2100,note:'Mocks every 2 days from now. Review is more important than volume — 1 hour of proper review beats 3 hours of new questions. Attack your weakest section daily alongside mock work.',days:[
+    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min, every wrong answer',m:60},{t:'For each wrong: time problem or knowledge problem?',m:15}]},
+    {day:'Wed',label:'Weak section attack',morning:[{t:'200q — weakest section, most-missed question type',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'200q — weakest section, second question type',m:130}]},
+    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Compare to Tuesday — are you improving?',m:10},{t:'150q — lowest section from this mock',m:100}]},
+    {day:'Fri',label:'Weak section day 2',morning:[{t:'200q — weakest section, all question types mixed',m:130},{t:'150 VR — minimum daily',m:63}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 DM — timed, the types you get wrong most',m:160},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Write your section strategy — what do you do in minute 1 of each section',m:20}]},
+    {day:'Sun',label:'Targeted drills',morning:[{t:'150q — weakest VR question type',m:63},{t:'150q — weakest DM question type',m:160}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 QR — mixed timed',m:108},{t:'80 VR — minimum daily',m:40}]},
+    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Update section strategy — what changed?',m:15}]},
   ]},
-  {wk:4,theme:'FULL MOCKS + ERROR ANALYSIS',target:2150,note:'From this week every mock is treated as the real exam — same conditions, no pausing, phone away. Review is the work. Doing more questions without reviewing is almost useless at this stage.',days:[
-    {day:'Sat',label:'Weak section surgical',morning:[{t:'200q — your single weakest question type across all sections',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150q — second weakest section',m:100},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Sun',label:'DM argument analysis',morning:[{t:'200 DM — argument analysis x100, deductive reasoning x100',m:213},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'120 DM — mixed timed',m:128},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions, phone away, no pausing',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min, every wrong answer',m:60},{t:'For each wrong: was it time or knowledge? Note it.',m:15}]},
-    {day:'Tue',label:'Mock review day',morning:[{t:'Re-do every wrong answer from yesterday mock — understand each one',m:60},{t:'200 VR — inference questions (highest value VR type)',m:83}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'100 DM — minimum daily',m:107},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Wed',label:'VR inference focus',morning:[{t:'250 VR — inference questions only',m:104},{t:'100 QR — timed',m:72}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'VR full section x2',m:47},{t:'120 DM — mixed',m:128}]},
-    {day:'Thu',label:'QR pressure',morning:[{t:'QR full section x4 back to back — 36q, 26 min each, log accuracy each round',m:105},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Write section strategy — what do you do in minute 1 of each section?',m:20},{t:'100 DM — mixed',m:107}]},
-    {day:'Fri',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review (60 min)',m:60},{t:'Rewrite your section strategy based on this mock',m:20}]},
+  {wk:4,theme:'TIMED PRESSURE',target:2200,note:'No comfortable practice from this point. Everything against the clock. Timed discomfort in practice is exam confidence on the day. Volume stays high — 5-6 hrs daily.',days:[
+    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Count calculator uses in QR — target reduce by 30% next mock',m:10}]},
+    {day:'Wed',label:'VR + DM timed back to back',morning:[{t:'VR full section x2 then DM full section x2 — no break between any',m:120},{t:'Note where concentration drops — this is what you are training',m:5},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 VR — inference only',m:63},{t:'100 DM — weakest type',m:107}]},
+    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'150q — weakest section from this mock',m:100}]},
+    {day:'Fri',label:'QR pressure',morning:[{t:'QR full section x4 back to back — 36q, 26 min each, log accuracy each round',m:105},{t:'200 VR — minimum daily',m:83}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 DM — timed, weakest types',m:160},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Rewrite full section strategy based on 4 weeks of data',m:20}]},
+    {day:'Sun',label:'Weak section surgical',morning:[{t:'250q — weakest section only, all question types',m:160},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — second weakest section',m:100},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Are you at 2200? If not — what is the single thing dragging you down?',m:10}]},
   ]},
-  {wk:5,theme:'TARGETED WEAK SECTION',target:2200,note:'By now you know exactly what is dragging your score. This week is surgical — attack that section directly, every single day. Do not spread effort evenly.',days:[
-    {day:'Sat',label:'Weak section day 1',morning:[{t:'200q — weakest section, your most-missed question type',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'200q — different question type within weak section',m:130}]},
-    {day:'Sun',label:'Weak section day 2',morning:[{t:'200q — weak section, third question type',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150q — weak section full mixed',m:100},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review (60 min)',m:60},{t:'Did weak section improve vs week 4?',m:10},{t:'150q — whatever still feels weakest',m:100}]},
-    {day:'Tue',label:'Mock review + 2nd weakest',morning:[{t:'Re-do all wrong answers from Monday mock',m:60},{t:'200q — second weakest section',m:130}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 DM — minimum',m:160},{t:'80 VR — minimum daily',m:40}]},
-    {day:'Wed',label:'Weak full section x4',morning:[{t:'Full timed weak section x2 — back to back',m:60},{t:'Full timed weak section x2 again',m:60},{t:'Log accuracy for all 4, compare',m:5}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 VR — timed',m:63},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Thu',label:'All sections mixed',morning:[{t:'150 VR + 120 DM + 120 QR — all timed, no break between sections',m:130},{t:'Log accuracy per section',m:5}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150q — weak section one final time this week',m:100}]},
-    {day:'Fri',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review (60 min)',m:60},{t:'Update section strategy notes',m:15}]},
+  {wk:5,theme:'EXAM SIMULATION',target:2270,note:'Simulate the exact exam experience every day this week — same time as your booking, same environment, no exceptions. Your brain needs to be conditioned to perform at that specific time of day.',days:[
+    {day:'Tue',label:'Simulated exam 1',morning:[{t:'Full mock at the exact time your exam is booked — treat it as completely real',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Write section strategy refinements',m:15}]},
+    {day:'Wed',label:'Weak section final attack',morning:[{t:'Re-do all wrong answers from Tuesday mock',m:60},{t:'200q — weakest section, surgical',m:130}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — second weakest section',m:100},{t:'80 VR — minimum daily',m:40}]},
+    {day:'Thu',label:'Simulated exam 2',morning:[{t:'Full mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Compare vs Tuesday — holding the score?',m:10}]},
+    {day:'Fri',label:'QR + DM sharp',morning:[{t:'QR full section x3 — calculator discipline',m:80},{t:'DM full section x3 — no pausing',m:120}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150 VR — inference questions',m:63},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Sat',label:'Simulated exam 3',morning:[{t:'Full mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Final strategy notes — write exactly what you do in the first 60 sec of each section',m:20}]},
+    {day:'Sun',label:'VR full sections',morning:[{t:'VR full section x4 — target finishing each with 2 min spare',m:93},{t:'100 DM — mixed timed',m:107}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'120 QR — minimum daily',m:87},{t:'Read strategy notes',m:15}]},
+    {day:'Mon',label:'Simulated exam 4',morning:[{t:'Full mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 45 min',m:45},{t:'You have 1 week left. Read strategy notes. Trust your prep.',m:10}]},
   ]},
-  {wk:6,theme:'TIMED PRESSURE',target:2240,note:'No comfortable practice from this point. Everything timed, everything tracked. If you are not uncomfortable you are not improving. Discomfort in practice is confidence on exam day.',days:[
-    {day:'Sat',label:'VR — finish early',morning:[{t:'VR full section x3 — target finishing with 2 min spare each round',m:70},{t:'100 DM — minimum daily',m:107}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 VR — inference only',m:63},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Sun',label:'DM — no pausing',morning:[{t:'DM full section x4 — no pausing between questions at all',m:150},{t:'80 VR — minimum daily',m:40}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 DM — types wrong this morning',m:160},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Mon',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Count unnecessary calculator uses in QR — target reduce 30% next mock',m:10},{t:'100 QR — calculator discipline only',m:72}]},
-    {day:'Tue',label:'QR calculator efficiency',morning:[{t:'QR full section x3 — count calc uses, reduce each round',m:80},{t:'150 VR — minimum daily',m:63}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 DM — timed',m:160},{t:'80 VR — minimum daily',m:40}]},
-    {day:'Wed',label:'VR + DM back to back',morning:[{t:'VR full x2 then DM full x2 — no break at all between any section',m:120},{t:'Note how concentration drops — this is what you are training',m:5}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 QR — timed',m:108},{t:'80 VR — minimum daily',m:40}]},
-    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150q — lowest section from today',m:100}]},
-    {day:'Fri',label:'Review and strategy',morning:[{t:'Re-do all wrong answers from both mocks this week',m:60},{t:'100 VR — minimum daily',m:50},{t:'80 QR — minimum daily',m:58}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'80 DM — minimum daily',m:85},{t:'Rewrite strategy notes — what are you doing in the first 60 seconds of each section',m:20}]},
-  ]},
-  {wk:7,theme:'CONSOLIDATION',target:2270,note:'No new techniques. You know what works — now cement it with repetition. Full mocks are the only scored practice this week. Everything else is review and drilling your identified weaknesses.',days:[
-    {day:'Sat',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150q — section with most errors from mock',m:100}]},
-    {day:'Sun',label:'Deep review',morning:[{t:'Re-do every wrong answer from Saturday mock — understand each one',m:70},{t:'200 VR — minimum',m:83}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 DM — types you consistently get wrong',m:160},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Mon',label:'Weak type drill',morning:[{t:'200q — single most-missed question type across all sections',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 DM — mixed timed',m:160},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Compare this mock vs week 6 — are you holding the gains?',m:10},{t:'150q — lowest section',m:100}]},
-    {day:'Wed',label:'Review only',morning:[{t:'Re-do all wrong answers from Tuesday mock',m:70},{t:'200 VR — minimum',m:83}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'120 QR — timed',m:87},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Thu',label:'Easy day',morning:[{t:'150 VR — comfortable pace, staying sharp',m:63},{t:'120 DM — comfortable pace',m:128}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'100 QR — comfortable pace',m:72},{t:'Read your strategy notes for all 3 sections',m:15}]},
-    {day:'Fri',label:'Rest',morning:[{t:'100 VR — minimum only, comfortable pace',m:50},{t:'80 QR — minimum only',m:58}],evening:[{t:'80 DM — minimum only',m:85},{t:'Read strategy notes',m:15}]},
-  ]},
-  {wk:8,theme:'EXAM SIMULATION',target:2300,note:'Simulate the exact exam experience — same time of day as your booking, same environment, no exceptions. Your brain needs to be conditioned to perform at that specific time.',days:[
-    {day:'Sat',label:'Simulated exam',morning:[{t:'Full mock at the exact time your exam is booked — treat it as real',m:111},{t:'Log scores immediately',m:5},{t:'100 VR after',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Write your section-by-section strategy — minute 1 of each section, exactly',m:20},{t:'100 DM — minimum daily',m:107}]},
-    {day:'Sun',label:'Finalise strategy',morning:[{t:'Re-do all wrong answers from Saturday mock',m:60},{t:'200 VR — minimum',m:83}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 DM — types still tripping you up',m:160},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Mon',label:'Simulated exam 2',morning:[{t:'Full mock — exam conditions, no food or toilet break during',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Is score holding vs Saturday?',m:5},{t:'150q — weakest section',m:100}]},
-    {day:'Tue',label:'Review only',morning:[{t:'Re-do all wrong answers from Monday mock',m:60},{t:'200 VR — minimum',m:83}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 VR — inference questions',m:63},{t:'80 QR — minimum daily',m:58}]},
-    {day:'Wed',label:'QR + DM sharp',morning:[{t:'QR full section x3 — calculator discipline',m:80},{t:'150 DM — timed',m:160}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'150 VR — timed',m:63},{t:'80 DM — minimum daily',m:85}]},
-    {day:'Thu',label:'VR only',morning:[{t:'VR full section x3 — timed',m:70},{t:'150 VR — inference only',m:63}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Read strategy notes',m:15}]},
-    {day:'Fri',label:'Rest',morning:[{t:'100 VR — minimum only',m:50},{t:'80 QR — minimum only',m:58}],evening:[{t:'80 DM — minimum only',m:85},{t:'Early night',m:0}]},
-  ]},
-  {wk:9,theme:'TAPER',target:2310,note:'Exam Mon 3 Aug. Score is built — taper this week, keep warm, trust the prep. Sat/Sun light work only, Mon is exam day.',days:[
-    {day:'Sat',label:'Light taper',morning:[{t:'80 VR — easy pace, staying in rhythm',m:33},{t:'60 DM — easy pace',m:64},{t:'60 QR — easy pace',m:43}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Read strategy notes for all 3 sections',m:20}]},
-    {day:'Sun',label:'Complete rest',morning:[{t:'Nothing UCAT-related at all today',m:0},{t:'Good sleep, good food, relax',m:0}],evening:[{t:'Prep exam bag — ID, confirmation email, water bottle, snack',m:10},{t:'Set alarm, sleep by 10pm',m:0}]},
+    {wk:6,theme:'FINAL WEEK',target:2310,note:'Exam Mon 3 Aug. Tue-Sat full study, Sun taper, Sat taper, Mon exam. Score is built in weeks 1-5 — this week is refinement and confidence.',days:[
+    {day:'Tue',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions',m:111},{t:'Log scores',m:5},{t:'150 VR after',m:63}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Final weak section notes',m:15}]},
+    {day:'Wed',label:'Weak section + drills',morning:[{t:'200q — weakest section, surgical',m:130},{t:'100 VR — minimum daily',m:50}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'150q — second weakest section',m:100},{t:'80 QR — minimum daily',m:58}]},
+    {day:'Thu',label:'Full mock',morning:[{t:'Full Medify mock — exam conditions, same time as booking',m:111},{t:'Log scores',m:5},{t:'100 VR after',m:50}],evening:[{t:'Full mock review — 60 min',m:60},{t:'Write final strategy notes — exactly what you do in first 60 sec of each section',m:20}]},
+    {day:'Fri',label:'VR + DM sharpener',morning:[{t:'VR full section x3 — timed, finish with time to spare',m:70},{t:'DM full section x2 — no pausing',m:75}],evening:[{t:'Review wrong answers (15 min)',m:15},{t:'100 QR — calculator discipline',m:72},{t:'Read strategy notes',m:15}]},
+    {day:'Sat',label:'Light taper — 2 days out',morning:[{t:'80 VR — easy pace, staying sharp',m:33},{t:'60 DM — easy pace',m:64},{t:'60 QR — easy pace',m:43}],evening:[{t:'Review wrong answers (10 min)',m:10},{t:'Read strategy notes one final time — no new material',m:20},{t:'Prep exam bag — ID, booking confirmation, water, snack',m:10}]},
+    {day:'Sun',label:'Rest — 1 day out',morning:[{t:'Nothing UCAT-related at all',m:0},{t:'Light activity, good food, stay calm',m:0}],evening:[{t:'Confirm test centre location and travel time',m:10},{t:'Good dinner, no alcohol, screen off by 9pm, sleep by 10pm',m:0}]},
     {day:'Mon',label:'⚔ EXAM DAY — Mon 3 Aug',morning:[{t:'Light breakfast — nothing heavy',m:0},{t:'Arrive at Pearson VUE 30 min early',m:0},{t:'VR: keyword scan, 30 sec max/question, skip + flag if unsure',m:0},{t:'DM: identify question type in first 5 seconds, apply the pattern',m:0},{t:'QR: calculator only when you genuinely need it',m:0}],evening:[{t:"You're done. Go eat something good. UCAT is over.",m:0}]},
-    {day:'Tue',label:'Post-exam rest',morning:[{t:'Sleep in — you earned it',m:0},{t:'Eat well, relax, do nothing UCAT-related',m:0}],evening:[{t:'Celebrate — go out, eat good food',m:0}]},
-    {day:'Wed',label:'Post-exam rest',morning:[{t:'Rest day — gym or whatever you feel like',m:0}],evening:[{t:'Start thinking about what comes next',m:0}]},
-    {day:'Thu',label:'Post-exam rest',morning:[{t:'Back to gym if feeling good',m:0}],evening:[{t:'Check UCAT results when released',m:0}]},
-    {day:'Fri',label:'Post-exam rest',morning:[{t:'Back to normal routine',m:0}],evening:[{t:'Results reflection — plan next steps',m:0}]},
-  ]},
-];
+  ]},];
 function renderUcatPlan(){
   const el=document.getElementById('ucat-plan-body');if(!el)return;
-  const planStart=new Date('2026-06-06'),now=new Date(),currentWk=Math.min(9,Math.max(1,Math.ceil((now-planStart)/(7*86400000))));
+  const planStart=new Date('2026-06-23'),now=new Date(),currentWk=Math.min(9,Math.max(1,Math.ceil((now-planStart)/(7*86400000))));
   el.innerHTML=UCAT_PLAN.map(week=>{
     const isCurrent=week.wk===currentWk;
     let html=`<div class="week-acc"><div class="week-acc-header ${isCurrent?'current':''}" onclick="toggleWeek(${week.wk})">`;
